@@ -32,9 +32,9 @@ SPArrayListUnitTest.o: SPArrayListUnitTest.c SPArrayList.h unit_test_util.h
 	$(CC) $(COMP_FLAG) -c $*.c
 SPFIARParserUnitTest.o: SPFIARParserUnitTest.c SPFIARParser.h unit_test_util.h
 	$(CC) $(COMP_FLAG) -c $*.c
-SPMiniMaxUnitTest.o: SPMiniMaxUnitTest.c SPMiniMax.h SPFIARGame.h SPMiniMaxNode.h unit_test_util
+SPMiniMaxUnitTest.o: SPMiniMaxUnitTest.c SPMiniMax.h SPFIARGame.h SPMiniMaxNode.h unit_test_util.h
 	$(CC) $(COMP_FLAG) -c $*.c
-SPMiniMaxNodeUnitTest.o: SPMiniMaxNodeUnitTest.c SPMiniMaxNode.h unit_test_util SPFIARGame.h
+SPMiniMaxNodeUnitTest.o: SPMiniMaxNodeUnitTest.c SPMiniMaxNode.h unit_test_util.h SPFIARGame.h
 	$(CC) $(COMP_FLAG) -c $*.c
 SPArrayList.o: SPArrayList.h SPArrayList.c
 	$(CC) $(COMP_FLAG) -c $*.c
