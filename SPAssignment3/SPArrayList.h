@@ -73,6 +73,7 @@ SPArrayList* spArrayListCreate(int maxSize);
  */
 SPArrayList* spArrayListCopy(SPArrayList* src);
 
+void coptyIntArray(int* src, int* dst, int size);
 /**
  * Frees all memory resources associated with the source array list. If the
  * source array is NULL, then the function does nothing.
@@ -90,6 +91,8 @@ void spArrayListDestroy(SPArrayList* src);
  * SP_ARRAY_LIST_SUCCESS otherwise
  */
 SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src);
+
+void clearIntArr(int* src, int size);
 
 /**
  * Inserts element at a specified index. The elements residing at and after the
