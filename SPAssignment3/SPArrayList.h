@@ -140,8 +140,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem);
  * array list is empty then an error message is returned and the source list
  * is not affected
  * @param src   - The source array list
- * @param elem  - The new element to be inserted
- * @param index - The index from where the new element will be removed.
+ * @param index - The index from where the element will be removed.
  *                The index is 0-based.
  * @return
  * SP_ARRAY_LIST_INVALID_ARGUMENT - if src == NULL or the index is out of bound
