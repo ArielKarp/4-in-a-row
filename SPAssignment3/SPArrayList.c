@@ -72,3 +72,8 @@ void clearIntArr(int* src, int size){
 	}
 	return;
 }
+
+
+SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
+
+}
