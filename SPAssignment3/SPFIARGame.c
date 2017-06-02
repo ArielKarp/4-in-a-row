@@ -11,11 +11,11 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 		return NULL;
 	}
 	SPFiarGame* returnGame = (SPFiarGame*) malloc(sizeof(SPFiarGame));
-	if (returnGame == NULL) {
+	if (NULL == returnGame) {
 		return NULL;
 	}
 	returnGame->historyMoves = spArrayListCreate(historySize);
-	if (returnGame->historyMoves == NULL) {
+	if (NULL == returnGame->historyMoves) {
 		return NULL;
 	}
 	returnGame->historySize = historySize;
@@ -41,16 +41,16 @@ void initTops(int tops[SP_FIAR_GAME_N_COLUMNS]) {
 }
 
 SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return NULL;
 	}
 	SPFiarGame* returnGame = spFiarGameCreate(src->historySize);
-	if (returnGame == NULL) {
+	if (NULL == returnGame) {
 		return NULL;
 	}
 	returnGame->currentPlayer = src->currentPlayer;
 	returnGame->historyMoves = spArrayListCopy(src->historyMoves);
-	if (returnGame->historyMoves == NULL) {
+	if (NULL == returnGame->historyMoves) {
 		return NULL;
 	}
 	copyBoard(returnGame->gameBoard, src->gameBoard);
@@ -77,16 +77,19 @@ void copyTops(int desTops[SP_FIAR_GAME_N_COLUMNS],
 }
 
 void spFiarGameDestroy(SPFiarGame* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return;
 	}
 	spArrayListDestroy(src->historyMoves);
+	if (NULL != src) {
+		free(src);
+	}
 	src = NULL;
 }
 
 SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
-	if (src == NULL || col >= SP_FIAR_GAME_N_ROWS) {
+	if (NULL == src || col >= SP_FIAR_GAME_N_COLUMNS) {
 		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -95,8 +98,15 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 		return rc;
 	}
 	src->gameBoard[src->tops[col]][col] = src->currentPlayer;
+	// History is full- shift to left
+	if (spArrayListSize(src->historyMoves) == src->historySize) {
+		if (spArrayListRemoveFirst(src->historyMoves)
+				!= SP_ARRAY_LIST_SUCCESS) {
+			printf("DEBUG: EROOR in list remove last");
+		}
+	}
 	if (spArrayListAddLast(src->historyMoves, col) != SP_ARRAY_LIST_SUCCESS) {
-		printf("DEBUG: EROOR in list addd");
+		printf("DEBUG: EROOR in list add");
 	}
 	// Change player's turn
 	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
@@ -109,7 +119,7 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 }
 
 bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
-	if (src == NULL || col >= SP_FIAR_GAME_N_ROWS) {
+	if (NULL == src || col >= SP_FIAR_GAME_N_COLUMNS) {
 		return false;
 	}
 	if (src->tops[col] == SP_FIAR_GAME_N_ROWS) {
@@ -120,11 +130,11 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
-	if (src == NULL) {
+	if (NULL == src) {
 		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
-	if (spArrayListIsEmpty(src->historyMoves)) {
+	if (spArrayListIsEmpty(src->historyMoves) == true) {
 		rc = SP_FIAR_GAME_NO_HISTORY;
 		return rc;
 	}
@@ -135,7 +145,11 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 	}
 	int lastMove = spArrayListGetLast(src->historyMoves);
-	src->gameBoard[src->tops[lastMove]][lastMove] = SP_FIAR_GAME_EMPTY_ENTRY;
+	if (lastMove == -1) {
+		printf("DEBUG: ERROR in getting last in array list of historyMoves\n");
+		return rc;
+	}
+	src->gameBoard[src->tops[lastMove] - 1][lastMove] = SP_FIAR_GAME_EMPTY_ENTRY;
 	src->tops[lastMove]--;
 	if (spArrayListRemoveLast(src->historyMoves) != SP_ARRAY_LIST_SUCCESS) {
 		printf("DEBUG: error in remove list last");
@@ -322,5 +336,15 @@ int gameBoardScan(SPFiarGame* src, int* sumSpanVec) {
 			}
 		}
 	}
+}
+
+char spFiarGameGetCurrentPlayer(SPFiarGame* src) {
+	if (NULL == src) {
+		return SP_FIAR_GAME_EMPTY_ENTRY;
+	}
+	if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
+		return SP_FIAR_GAME_PLAYER_1_SYMBOL;
+	}
+	return SP_FIAR_GAME_PLAYER_2_SYMBOL;
 }
 
