@@ -1,6 +1,9 @@
 #ifndef SPFIARGAME_H_
 #define SPFIARGAME_H_
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "SPArrayList.h"
 
 /**
@@ -33,6 +36,8 @@ typedef struct sp_fiar_game_t {
 	char gameBoard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS];
 	int tops[SP_FIAR_GAME_N_COLUMNS];
 	char currentPlayer;
+	SPArrayList* historyMoves;
+
 	//You May add any fields you like
 } SPFiarGame;
 
@@ -60,6 +65,8 @@ typedef enum sp_fiar_game_message_t {
  * Otherwise, a new game instant is returned.
  */
 SPFiarGame* spFiarGameCreate(int historySize);
+
+void initGameBoard(char** board);
 
 /**
  *	Creates a copy of a given game.
