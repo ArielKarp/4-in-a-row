@@ -135,7 +135,8 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 	}
 	int lastMove = spArrayListGetLast(src->historyMoves);
-
+	src->gameBoard[src->tops[lastMove]][lastMove] = SP_FIAR_GAME_EMPTY_ENTRY;
+	src->tops[lastMove]--;
 	if (spArrayListRemoveLast(src->historyMoves) != SP_ARRAY_LIST_SUCCESS) {
 		printf("DEBUG: error in remove list last");
 	}
