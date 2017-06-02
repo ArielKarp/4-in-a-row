@@ -32,4 +32,6 @@ void initGameBoard(char board[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]) {
 	}
 }
 
+SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src){
 
+}
