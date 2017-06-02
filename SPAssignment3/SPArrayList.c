@@ -11,24 +11,24 @@ SPArrayList* spArrayListCreate(int maxSize) {
 		return NULL;
 	}
 	SPArrayList* returnList = (SPArrayList*) malloc(sizeof(SPArrayList));
-	if (returnList == NULL) {
+	if (NULL == returnList) {
 		return NULL;
 	}
 	returnList->maxSize = maxSize;
 	returnList->actualSize = 0;
 	returnList->elements = (int*) calloc(maxSize, sizeof(int));
-	if (returnList->elements == NULL) {
+	if (NULL == returnList->elements) {
 		return NULL;
 	}
 	return returnList;
 }
 
 SPArrayList* spArrayListCopy(SPArrayList* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return NULL;
 	}
 	SPArrayList* returnList = spArrayListCreate(src->maxSize);
-	if (returnList == NULL) {
+	if (NULL == returnList) {
 		return NULL;
 	}
 	returnList->actualSize = src->actualSize;
@@ -45,10 +45,10 @@ void coptyIntArray(int* src, int* dst, int size) {
 }
 
 void spArrayListDestroy(SPArrayList* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return;
 	}
-	if (src->elements != NULL) {
+	if (NULL != src->elements) {
 		free(src->elements);
 	}
 	src->elements = NULL;
@@ -58,7 +58,7 @@ void spArrayListDestroy(SPArrayList* src) {
 
 SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src) {
 	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
-	if (src == NULL) {
+	if (NULL == src) {
 		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -77,7 +77,7 @@ void clearIntArr(int* src, int size) {
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
 	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
-	if (src == NULL || index < 0 || index > src->actualSize) {
+	if (NULL == src || index < 0 || index > src->actualSize) {
 		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -102,7 +102,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddFirst(SPArrayList* src, int elem) {
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem) {
-	if (src == NULL) {
+	if (NULL == src) {
 		SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -111,7 +111,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem) {
 
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
-	if (src == NULL || index < 0 || index >= src->actualSize) {
+	if (NULL == src || index < 0 || index >= src->actualSize) {
 		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -135,7 +135,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveFirst(SPArrayList* src) {
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -143,7 +143,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
 }
 
 int spArrayListGetAt(SPArrayList* src, int index) {
-	if (src == NULL || index < 0 || index >= src->actualSize) {
+	if (NULL == src || index < 0 || index >= src->actualSize) {
 		return -1;
 	}
 	return src->elements[index];
@@ -154,35 +154,35 @@ int spArrayListGetFirst(SPArrayList* src) {
 }
 
 int spArrayListGetLast(SPArrayList* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return -1;
 	}
-	return spArrayListGetAt(src, src->actualSize);
+	return spArrayListGetAt(src, src->actualSize - 1);
 }
 
 int spArrayListMaxCapacity(SPArrayList* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return -1;
 	}
 	return src->maxSize;
 }
 
 int spArrayListSize(SPArrayList* src) {
-	if (src == NULL) {
+	if (NULL == src) {
 		return -1;
 	}
 	return src->actualSize;
 }
 
 bool spArrayListIsFull(SPArrayList* src) {
-	if (src == NULL || src->actualSize < src->maxSize) {
+	if (NULL == src || src->actualSize < src->maxSize) {
 		return false;
 	}
 	return true;
 }
 
 bool spArrayListIsEmpty(SPArrayList* src) {
-	if (src == NULL || src->actualSize > 0) {
+	if (NULL == src || src->actualSize > 0) {
 		return false;
 	}
 	return true;
