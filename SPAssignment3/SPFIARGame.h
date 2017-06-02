@@ -37,6 +37,7 @@ typedef struct sp_fiar_game_t {
 	int tops[SP_FIAR_GAME_N_COLUMNS];
 	char currentPlayer;
 	SPArrayList* historyMoves;
+	int historySize;
 
 	//You May add any fields you like
 } SPFiarGame;
@@ -67,6 +68,7 @@ typedef enum sp_fiar_game_message_t {
 SPFiarGame* spFiarGameCreate(int historySize);
 
 void initGameBoard(char board[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]);
+void initTops(int tops[SP_FIAR_GAME_N_COLUMNS]);
 
 /**
  *	Creates a copy of a given game.
@@ -79,6 +81,9 @@ void initGameBoard(char board[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]);
  *
  */
 SPFiarGame* spFiarGameCopy(SPFiarGame* src);
+
+void copyBoard(char destBoard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS], char srcBoard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]);
+void copyTops(int desTops[SP_FIAR_GAME_N_COLUMNS], int srcTops[SP_FIAR_GAME_N_COLUMNS]);
 
 /**
  * Frees all memory allocation associated with a given game. If src==NULL
