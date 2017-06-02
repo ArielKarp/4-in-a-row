@@ -39,7 +39,7 @@ SPCommand spParserPraseLine(const char* str) {
 	char* cmdStr;
 	cmdStr = strtok(copyStr, delim);
 	//printf("%s\n",cmdStr);
-	if (cmdStr == NULL) {
+	if (cmdStr == NULL || strcmp(cmdStr,"\0") == 0) {
 		return returnCmd;
 	}
 

@@ -113,9 +113,9 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 	return true;
 }
 
-SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
-
-}
+//SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
+//
+//}
 
 SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
@@ -124,14 +124,28 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 		return rc;
 	}
 
-	int line = SP_FIAR_GAME_N_ROWS;
-	for (; line > 0; line--) {
-		printf("| %c %c %c %c %c %c %c |\n", src->gameBoard[line][0],
-				src->gameBoard[line][1], src->gameBoard[line][2], src->gameBoard[line][3],
-				src->gameBoard[line][4], src->gameBoard[line][5],src->gameBoard[line][6]);
+	int row = SP_FIAR_GAME_N_ROWS - 1;
+	for (; row > 0; row--) {
+		printf("| %c %c %c %c %c %c %c |\n", src->gameBoard[row][0],
+				src->gameBoard[row][1], src->gameBoard[row][2], src->gameBoard[row][3],
+				src->gameBoard[row][4], src->gameBoard[row][5],src->gameBoard[row][6]);
 	}
 	printf("-----------------\n");
 	printf("| 1 2 3 4 5 6 7 |\n");
 
 	return rc;
 }
+
+//char spFiarCheckWinner(SPFiarGame* src){
+//
+//	int row = SP_FIAR_GAME_N_ROWS;
+//	char candidate;
+//	for (; row > 0; row--) {
+//		candidate = src->gameBoard[row][3]
+//		if (candidate == 'X' || candidate == 'O'){
+//
+//		}
+//	}
+//
+//	return NULL;
+//}
