@@ -39,6 +39,7 @@ typedef struct sp_fiar_game_t {
 	char currentPlayer;
 	SPArrayList* historyMoves;
 	int historySize;
+	int sumSpanVec[6];
 
 	//You May add any fields you like
 } SPFiarGame;
@@ -170,5 +171,7 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 * null character - otherwise
 */
 char spFiarCheckWinner(SPFiarGame* src);
-int gameBoardScan(SPFiarGame* currentGame, int* sumSpanVec);
+int gameBoardScan(SPFiarGame* currentGame);
+int gameScoringFunc(SPFiarGame* currentGame);
+bool checkSpanVector(SPFiarGame* src, int x, int y, int vector);
 #endif
