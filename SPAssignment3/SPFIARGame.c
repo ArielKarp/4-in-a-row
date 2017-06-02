@@ -20,9 +20,10 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 	}
 	initGameBoard(returnGame->gameBoard);
 	returnGame->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+	return returnGame;
 }
 
-void initGameBoard(char** board) {
+void initGameBoard(char board[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]) {
 	int i, j =0;
 	for (; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for(;j < SP_FIAR_GAME_N_COLUMNS; i++) {
@@ -30,3 +31,5 @@ void initGameBoard(char** board) {
 		}
 	}
 }
+
+

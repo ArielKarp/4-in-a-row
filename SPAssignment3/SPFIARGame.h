@@ -66,7 +66,7 @@ typedef enum sp_fiar_game_message_t {
  */
 SPFiarGame* spFiarGameCreate(int historySize);
 
-void initGameBoard(char** board);
+void initGameBoard(char board[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]);
 
 /**
  *	Creates a copy of a given game.
