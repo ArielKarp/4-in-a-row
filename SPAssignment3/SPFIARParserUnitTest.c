@@ -14,6 +14,7 @@ static bool spParserCheckIsInt() {
 	ASSERT_TRUE(spParserIsInt("-01"));
 	ASSERT_TRUE(spParserIsInt("-011"));
 	ASSERT_TRUE(spParserIsInt("-0111"));
+	ASSERT_FALSE(spParserIsInt("10\n"));
 	return true;
 }
 static bool spParserCheckParseLine() {
@@ -36,7 +37,9 @@ static bool spParserCheckParseLine() {
 	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
 	cmd = spParserPraseLine("432 312");
 	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
-	cmd = spParserPraseLine("         ");
+	cmd = spParserPraseLine(" ");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("");
 	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
 	cmd = spParserPraseLine("add_disc");
 	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
@@ -44,6 +47,8 @@ static bool spParserCheckParseLine() {
 	ASSERT_TRUE(cmd.cmd == SP_QUIT && !cmd.validArg);
 	cmd = spParserPraseLine("quitd");
 	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("add_disc -5\n");
+	ASSERT_TRUE(cmd.cmd == SP_ADD_DISC && cmd.validArg && cmd.arg == -5);
 
 	return true;
 }
