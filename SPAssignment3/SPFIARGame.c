@@ -163,16 +163,17 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 	return rc;
 }
 
-//char spFiarCheckWinner(SPFiarGame* src){
-//
-//	int row = SP_FIAR_GAME_N_ROWS;
-//	char candidate;
-//	for (; row > 0; row--) {
-//		candidate = src->gameBoard[row][3]
-//		if (candidate == 'X' || candidate == 'O'){
-//
-//		}
-//	}
-//
-//	return NULL;
-//}
+char spFiarCheckWinner(SPFiarGame* src){
+
+	int row = SP_FIAR_GAME_N_ROWS;
+	int span = SP_FIAR_GAME_SPAN;
+	char candidate;
+	for (; row > 0; row--) {
+		candidate = src->gameBoard[row][3];
+		if (candidate == 'X' || candidate == 'O'){
+			if(candidate=src->gameBoard[row][3]){
+		}
+	}
+
+	return NULL;
+}
