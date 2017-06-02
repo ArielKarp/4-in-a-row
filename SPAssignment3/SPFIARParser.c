@@ -39,7 +39,7 @@ SPCommand spParserPraseLine(const char* str) {
 	char* cmdStr;
 	cmdStr = strtok(copyStr, delim);
 	//printf("%s\n",cmdStr);
-	if (cmdStr == NULL || strcmp(cmdStr,"\0") == 0) {
+	if (NULL == cmdStr || strcmp(cmdStr,"\0") == 0) {
 		return returnCmd;
 	}
 
@@ -54,7 +54,7 @@ SPCommand spParserPraseLine(const char* str) {
 	else if (strcmp(cmdStr,"add_disc") == 0) {
 
 		char* numStr = strtok(NULL, delim);
-		if (numStr == NULL) {
+		if (NULL == numStr) {
 			return returnCmd;
 		}
 		returnCmd.arg = atoi(numStr);

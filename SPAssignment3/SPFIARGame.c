@@ -143,10 +143,9 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	return rc;
 }
 
-
 SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
-	if (src == NULL) {
+	if (NULL == src) {
 		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -154,27 +153,174 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 	int row = SP_FIAR_GAME_N_ROWS - 1;
 	for (; row >= 0; row--) {
 		printf("| %c %c %c %c %c %c %c |\n", src->gameBoard[row][0],
-				src->gameBoard[row][1], src->gameBoard[row][2], src->gameBoard[row][3],
-				src->gameBoard[row][4], src->gameBoard[row][5],src->gameBoard[row][6]);
+				src->gameBoard[row][1], src->gameBoard[row][2],
+				src->gameBoard[row][3], src->gameBoard[row][4],
+				src->gameBoard[row][5], src->gameBoard[row][6]);
 
 	}
 	printf("-----------------\n");
-	printf("| 1 2 3 4 5 6 7 |\n");
+	printf("  1 2 3 4 5 6 7  \n");
 
 	return rc;
 }
 
-char spFiarCheckWinner(SPFiarGame* src){
+char spFiarCheckWinner(SPFiarGame* src) {
+	int result = 0;
+	result = gameScoringFunc(src);
+	if (result == INT_MAX) {
+		return src->currentPlayer;
+	}
+	if (result == INT_MIN) {
+		if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
+			return SP_FIAR_GAME_PLAYER_2_SYMBOL;
+		} else {
+			return SP_FIAR_GAME_PLAYER_1_SYMBOL;
+		}
+	}
+	bool checkIfFull = true;
+	int i = 0, j = 0;
+	// TODO- improve complexity
+	for (; i < SP_FIAR_GAME_N_ROWS; i++) {
+		for (j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
+			if (src->gameBoard[i][j] == SP_FIAR_GAME_EMPTY_ENTRY) {
+				checkIfFull = false;
+			}
+		}
+	}
+	if (checkIfFull == true) {
+		return SP_FIAR_GAME_TIE_SYMBOL;
+	}
+	return '\0';
+}
+
+int gameScoringFunc(SPFiarGame* currentGame) {
+	int scoreVector[] = {-5, -2, -1, 1, 2, 5};
+	// This is {-3...3}
+	int sumSpanVec[] = {0, 0, 0, 0, 0, 0};
+	int result = 0;
+	// HARDCODED
+	int sizeOfSpanVec = 6;
+	result = gameBoardScan(currentGame, sumSpanVec);
+	if (result == INT_MIN || result == INT_MAX) {
+		return result;
+	}
+	for (int i = 0; i < sizeOfSpanVec; i++) {
+		result += scoreVector[i]*sumSpanVec[i];
+	}
+	return result;
+
+}
+
+int gameBoardScan(SPFiarGame* src, int* sumSpanVec) {
 
 	int row = SP_FIAR_GAME_N_ROWS;
+	int col = SP_FIAR_GAME_N_COLUMNS;
+	int colIndex = 0;
+	int rowIndex = 0;
 	int span = SP_FIAR_GAME_SPAN;
+	int spanCnt = 0;
+	int x;
+	int y;
 	char candidate;
-	for (; row > 0; row--) {
-		candidate = src->gameBoard[row][3];
-		if (candidate == 'X' || candidate == 'O'){
-			if(candidate=src->gameBoard[row][3]){
+
+	//Checking horizontal span
+	for (; colIndex <= SP_FIAR_GAME_N_COLUMNS - span; colIndex++) {
+
+		row = SP_FIAR_GAME_N_ROWS - 1;
+		for (; row >= 0; row--) {
+
+			span = SP_FIAR_GAME_SPAN;
+			candidate = src->gameBoard[row][colIndex];
+			if (candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL
+					|| candidate == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
+				spanCnt = 0;
+				for (; span >= 0; span--) {
+					if (candidate == src->gameBoard[row][colIndex + span]) {
+						spanCnt++;
+					}
+				}
+				if (spanCnt == SP_FIAR_GAME_SPAN) {
+					printf("%c\n", candidate);
+					return candidate;
+				}
+			}
 		}
 	}
 
-	return NULL;
+	row = SP_FIAR_GAME_N_ROWS;
+	rowIndex = 0;
+	span = SP_FIAR_GAME_SPAN;
+	spanCnt = 0;
+
+	//Checking vertical span
+	for (; rowIndex <= SP_FIAR_GAME_N_ROWS - span; rowIndex++) {
+
+		col = SP_FIAR_GAME_N_COLUMNS - 1;
+		for (; col >= 0; col--) {
+
+			span = SP_FIAR_GAME_SPAN;
+			candidate = src->gameBoard[rowIndex][col];
+			if (candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL
+					|| candidate == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
+				spanCnt = 0;
+				for (; span >= 0; span--) {
+					if (candidate == src->gameBoard[rowIndex + span][col]) {
+						//printf("%d %d %c\n", rowIndex + span+1,col+1,candidate);
+						spanCnt++;
+						//printf("%d\n", spanCnt);
+
+					}
+				}
+				if (spanCnt == SP_FIAR_GAME_SPAN) {
+					printf("%d\n", spanCnt);
+					printf("%c\n", candidate);
+					return candidate;
+				}
+			}
+		}
+	}
+
+	col = SP_FIAR_GAME_N_COLUMNS;
+	colIndex = 0;
+	row = SP_FIAR_GAME_N_ROWS;
+	rowIndex = 0;
+	span = SP_FIAR_GAME_SPAN;
+	spanCnt = 0;
+
+	//Checking diagonal span
+	y = SP_FIAR_GAME_N_ROWS - 1;
+	x = 0;
+	colIndex = 0;
+	row = SP_FIAR_GAME_N_ROWS;
+
+	for (; colIndex <= col - span; colIndex++) {
+
+		row = SP_FIAR_GAME_N_ROWS - 1 - colIndex;
+		for (; row >= SP_FIAR_GAME_N_ROWS - 1 - colIndex; row--) {
+
+			span = SP_FIAR_GAME_SPAN;
+			candidate = src->gameBoard[row][colIndex];
+			if (candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL
+					|| candidate == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
+				spanCnt = 1;
+				for (; span >= 0; span--) {
+					if ((y < 6) & (y >= 0) & (x < 7) & (x >= 0)
+							& (candidate == src->gameBoard[y][x])) {
+						printf("%d %d %c\n", x + 1, y + 1, candidate);
+						spanCnt++;
+					}
+					y--;
+					x++;
+				}
+				printf("%d\n", spanCnt);
+
+				if (spanCnt == SP_FIAR_GAME_SPAN) {
+					printf("%c\n", candidate);
+					return candidate;
+				}
+
+			}
+		}
+	}
 }
+

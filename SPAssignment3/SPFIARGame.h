@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include "SPArrayList.h"
 
 /**
@@ -169,5 +170,5 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 * null character - otherwise
 */
 char spFiarCheckWinner(SPFiarGame* src);
-
+int gameBoardScan(SPFiarGame* currentGame, int* sumSpanVec);
 #endif
