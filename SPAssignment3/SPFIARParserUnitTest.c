@@ -26,6 +26,25 @@ static bool spParserCheckParseLine() {
 	ASSERT_TRUE(cmd.cmd == SP_ADD_DISC && cmd.validArg && cmd.arg == 17);
 	cmd = spParserPraseLine("aDd_disc 17");
 	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+
+
+	cmd = spParserPraseLine("43");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("fadfds");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("aDddasdsa 432 312");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("432 312");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("         ");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("add_disc");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+	cmd = spParserPraseLine("quit");
+	ASSERT_TRUE(cmd.cmd == SP_QUIT && !cmd.validArg);
+	cmd = spParserPraseLine("quitd");
+	ASSERT_TRUE(cmd.cmd == SP_INVALID_LINE && !cmd.validArg);
+
 	return true;
 }
 int main() {
