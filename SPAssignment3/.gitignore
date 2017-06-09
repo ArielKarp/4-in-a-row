@@ -7,3 +7,9 @@
 /SPFIARGameUnitTest.o
 /SPFIARParser.h.orig
 /SPFIARGameUnitTest.exe
+/SPMiniMaxUnitTest.o
+/SPMiniMaxNodeUnitTest.o
+/SPMiniMaxUnitTest.exe
+/SPMiniMaxNodeUnitTest.exe
+/SPMiniMax.o
+/SPMiniMaxNode.o

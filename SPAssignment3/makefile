@@ -20,10 +20,10 @@ SPArrayListUnitTest: $(ARRAY_LIST_TEST_OBJS)
 	$(CC) $(ARRAY_LIST_TEST_OBJS) -o $@
 SPFIARParserUnitTest: $(PARSER_TEST_OBJS)
 	$(CC) $(PARSER_TEST_OBJS) -o $@
-SPMiniMaxUnitTest: $(MINMAX_TEST_OBJ)
-	$(CC) $(MINMAXNode_TEST_OBJ) -o $@
 SPMiniMaxNodeUnitTest: $(MINMAXNode_TEST_OBJ)
 	$(CC) $(MINMAXNode_TEST_OBJ) -o $@
+SPMiniMaxUnitTest: $(MINMAX_TEST_OBJ)
+	$(CC) $(MINMAX_TEST_OBJ) -o $@
 SPMainAuxUnitTest: $(MAINAUX_TEST_OBJS)
 	$(CC) $(MAINAUX_TEST_OBJS) -o $@
 SPFIARGameUnitTest.o: SPFIARGameUnitTest.c unit_test_util.h SPArrayList.h SPFIARGame.h
