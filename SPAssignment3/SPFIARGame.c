@@ -208,28 +208,32 @@ char spFiarCheckWinner(SPFiarGame* src) {
 }
 
 /* vector types:
-// 1- horizontal
-// 2- vertical
-// 3- diagonal \
+ // 1- horizontal
+ // 2- vertical
+ // 3- diagonal \
 // 4- diagonal / */
-bool checkSpanVector(SPFiarGame* src, int r, int c, int vector, int sumSpanVec[]) {
+bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
+		int sumSpanVec[], char currentPlayer) {
 	int span = SP_FIAR_GAME_SPAN;
-	char candidate = src->gameBoard[r][c];
-	int spanCnt = 0;
+	char candidate = currentPlayer;
+	int playerNumCnt = 0;
+	int opponentNumCnt = 0;
 	if ((candidate != SP_FIAR_GAME_PLAYER_1_SYMBOL)
-			& (candidate != SP_FIAR_GAME_PLAYER_2_SYMBOL)) {
+			&& (candidate != SP_FIAR_GAME_PLAYER_2_SYMBOL)) {
 		return false;
 	}
 	for (; span > 0; span--) {
-
-		if ((r < 6) & (r >= 0) & (c < 7) & (c >= 0)
-				& ((candidate == src->gameBoard[r][c]))) {
-			spanCnt++;
-		} else {
+		if (!((r < 6) && (r >= 0) && (c < 7) && (c >= 0))) {
 			return false;
 		}
-		printf("%d %d %c %d %d\n", c + 1, r + 1, src->gameBoard[r][c], span,
-				spanCnt);
+		if (candidate == src->gameBoard[r][c]) {
+			playerNumCnt++;
+		}
+		if ((candidate != src->gameBoard[r][c]) && (src->gameBoard[r][c] != SP_FIAR_GAME_EMPTY_ENTRY))  {
+			opponentNumCnt++;
+		}
+		//printf("%d %d %c %d %d\n", c + 1, r + 1, src->gameBoard[r][c], span,
+		//	spanCnt);
 
 		if (vector == 1) {
 			c++;
@@ -247,28 +251,27 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector, int sumSpanVec[]
 		}
 	}
 
-	printf("vector is: %d\n", vector);
-	if (spanCnt == SP_FIAR_GAME_SPAN) {
+	if (playerNumCnt == SP_FIAR_GAME_SPAN) {
 		//printf("candidate is: %c\n", candidate);
 		return true;
 	} else if ((candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL)
-			|| (candidate == SP_FIAR_GAME_PLAYER_2_SYMBOL)){
-		if ((spanCnt == 3) & (src->currentPlayer != candidate)) {
+			|| (candidate == SP_FIAR_GAME_PLAYER_2_SYMBOL)) {
+		if ((playerNumCnt - opponentNumCnt) == -3) {
 			sumSpanVec[0]++;
 		}
-		if ((spanCnt == 2) & (src->currentPlayer != candidate)) {
+		if ((playerNumCnt - opponentNumCnt) == -2) {
 			sumSpanVec[1]++;
 		}
-		if ((spanCnt == 1) & (src->currentPlayer != candidate)) {
+		if ((playerNumCnt - opponentNumCnt) == -1) {
 			sumSpanVec[2]++;
 		}
-		if ((spanCnt == 1) & (src->currentPlayer == candidate)) {
+		if ((playerNumCnt - opponentNumCnt) == 1) {
 			sumSpanVec[3]++;
 		}
-		if ((spanCnt == 2) & (src->currentPlayer == candidate)) {
+		if ((playerNumCnt - opponentNumCnt) == 2) {
 			sumSpanVec[4]++;
 		}
-		if ((spanCnt == 3) & (src->currentPlayer == candidate)) {
+		if ((playerNumCnt - opponentNumCnt) == 3) {
 			sumSpanVec[5]++;
 		}
 
@@ -278,15 +281,15 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector, int sumSpanVec[]
 
 int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 
-	bool winner;
+	bool winner = false;
 	int vector = 1;
 
 	for (; vector < 5; vector++) {
 		int i = 0, j = 0;
 		for (; i < SP_FIAR_GAME_N_ROWS; i++) {
 			for (j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
-				winner = checkSpanVector(src, i, j, vector, sumSpanVec);
-				if (winner) {
+				winner = checkSpanVector(src, i, j, vector, sumSpanVec, currentPlayer);
+				if (winner == true) {
 					if (src->gameBoard[i][j] != currentPlayer) {
 						return INT_MIN;
 					} else {
@@ -303,17 +306,20 @@ int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 int gameScoringFunc(SPFiarGame* currentGame) {
 	int scoreVector[] = { -5, -2, -1, 1, 2, 5 };
 	// This is {-3...3}
-	int sumSpanVec[6] = {0};
+	int sumSpanVec[6] = { 0 };
 	int result = 0;
 	// HARDCODED
 	int sizeOfSpanVec = 6;
 	result = gameBoardScan(currentGame, sumSpanVec, currentGame->currentPlayer);
-	if (result == INT_MIN || result== INT_MAX) {
+	if (result == INT_MIN || result == INT_MAX) {
 		return result;
 	}
 	result = 0;
 	for (int i = 0; i < sizeOfSpanVec; i++) {
-		result += (scoreVector[i]) * (sumSpanVec[i]);
+		//printf("sum of %d is %d\n", i, sumSpanVec[i]);
+		result += ((scoreVector[i]) * (sumSpanVec[i]));
+		//printf("result is %d\n" ,result);
+
 	}
 	return result;
 

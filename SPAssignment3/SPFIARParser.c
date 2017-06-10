@@ -76,28 +76,3 @@ SPCommand spParserPraseLine(const char* str) {
 
 	return returnCmd;
 }
-
-//switch(cmdStr) {
-//	      case 'SP_SUGGEST_MOVE' : //suggest_move
-//	    	 returnCmd -> cmd = SP_SUGGEST_MOVE;
-//	         printf("Suggested move: drop a disc to column X\n");
-//	         break;
-//	      case 'SP_UNDO_MOVE' : //undo_move
-//	    	 returnCmd -> cmd = SP_UNDO_MOVE;
-//	         printf("Remove disc: remove computer’s disc at column X\n");
-//	         printf("Remove disc: remove user’s disc at column Y\n");
-//	         break;
-//	      case 'SP_ADD_DISC' : //add_disc
-//	    	 returnCmd -> cmd = SP_ADD_DISC;
-//	    	 returnCmd -> arg = atoi(strtok(NULL, " "));
-//	         printf("Computer move: add disc to column (xxx)\n");
-//	         break;
-//	      case 'SP_QUIT' : //quit
-//	    	 returnCmd -> cmd = SP_QUIT;
-//	         printf("Exiting…\n");
-//	         break;
-//	      case 'SP_RESTART' : //restart_game
-//	    	 returnCmd -> cmd = SP_RESTART;
-//		     printf("Game restarted!\n");
-//	         break;
-//	   }

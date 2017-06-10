@@ -172,5 +172,5 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 char spFiarCheckWinner(SPFiarGame* src);
 int gameBoardScan(SPFiarGame* currentGame, int sumSpanVec[], char currentPlayer);
 int gameScoringFunc(SPFiarGame* currentGame);
-bool checkSpanVector(SPFiarGame* src, int x, int y, int vector, int sumSpanVec[]);
+bool checkSpanVector(SPFiarGame* src, int x, int y, int vector, int sumSpanVec[], char currentPlayer);
 #endif
