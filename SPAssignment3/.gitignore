@@ -13,3 +13,6 @@
 /SPMiniMaxNodeUnitTest.exe
 /SPMiniMax.o
 /SPMiniMaxNode.o
+/SPFIARParser.o
+/SPFIARParserUnitTest.o
+/SPFIARParserUnitTest.exe

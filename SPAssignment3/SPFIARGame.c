@@ -183,8 +183,8 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 
 char spFiarCheckWinner(SPFiarGame* src) {
 	int result = 0;
-	result = gameScoringFunc(src);
-	if (result == INT_MIN) {
+	result = gameScoringFuncWinner(src);
+	if (result == INT_MAX) {
 		if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
 			return SP_FIAR_GAME_PLAYER_2_SYMBOL;
 		} else {
@@ -239,19 +239,19 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 			c++;
 		}
 		if (vector == 2) {
-			r--;
+			r++;
 		}
 		if (vector == 3) {
 			c--;
 			r++;
 		}
 		if (vector == 4) {
-			c--;
-			r--;
+			c++;
+			r++;
 		}
 	}
 
-	if (playerNumCnt == SP_FIAR_GAME_SPAN) {
+	if (playerNumCnt == SP_FIAR_GAME_SPAN || opponentNumCnt == SP_FIAR_GAME_SPAN) {
 		//printf("candidate is: %c\n", candidate);
 		return true;
 	} else if ((candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL)
@@ -279,14 +279,15 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 	return false;
 }
 
+// TODO- bug in winner!!
 int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 
 	bool winner = false;
 	int vector = 1;
+	int i = 0, j = 0;
 
 	for (; vector < 5; vector++) {
-		int i = 0, j = 0;
-		for (; i < SP_FIAR_GAME_N_ROWS; i++) {
+		for (i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 			for (j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
 				winner = checkSpanVector(src, i, j, vector, sumSpanVec, currentPlayer);
 				if (winner == true) {
@@ -303,14 +304,45 @@ int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 	return '\0';
 }
 
-int gameScoringFunc(SPFiarGame* currentGame) {
+
+int gameScoringFuncWinner(SPFiarGame* currentGame) {
 	int scoreVector[] = { -5, -2, -1, 1, 2, 5 };
 	// This is {-3...3}
 	int sumSpanVec[6] = { 0 };
 	int result = 0;
 	// HARDCODED
 	int sizeOfSpanVec = 6;
-	result = gameBoardScan(currentGame, sumSpanVec, currentGame->currentPlayer);
+	char currentPlayer;
+	if (currentGame->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
+		currentPlayer =  SP_FIAR_GAME_PLAYER_2_SYMBOL;
+	}else {
+		currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
+	}
+	result = gameBoardScan(currentGame, sumSpanVec, currentPlayer);
+
+	if (result == INT_MIN || result == INT_MAX) {
+		return result;
+	}
+	result = 0;
+	for (int i = 0; i < sizeOfSpanVec; i++) {
+		//printf("sum of %d is %d\n", i, sumSpanVec[i]);
+		result += ((scoreVector[i]) * (sumSpanVec[i]));
+		//printf("result is %d\n" ,result);
+
+	}
+	return result;
+
+}
+
+int gameScoringFunc(SPFiarGame* currentGame, char currentPlayer) {
+	int scoreVector[] = { -5, -2, -1, 1, 2, 5 };
+	// This is {-3...3}
+	int sumSpanVec[6] = { 0 };
+	int result = 0;
+	// HARDCODED
+	int sizeOfSpanVec = 6;
+	result = gameBoardScan(currentGame, sumSpanVec, currentPlayer);
+
 	if (result == INT_MIN || result == INT_MAX) {
 		return result;
 	}

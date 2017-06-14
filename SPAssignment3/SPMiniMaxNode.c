@@ -6,6 +6,8 @@
 
 #include "SPMiniMaxNode.h"
 
+int cout_num_of_rec = 0;
+
 int possibleMoves(SPFiarGame* currentGame, int possbileStepsArr[]) {
 	int i = 0, possibleMoves = 0;
 	if (NULL == currentGame) {
@@ -20,34 +22,51 @@ int possibleMoves(SPFiarGame* currentGame, int possbileStepsArr[]) {
 	return possibleMoves;
 }
 
-int findMinIndexAndValue(int possibleStepsValueArr[], int sizeOfArr,
-		int* minValueIn) {
-	int i = 1, minValue = 0, minIndex = 0;
+// Add NULL test for possibleStepsArr
+int findMinIndexAndValue(int possibleStepsValueArr[], int possibleStepsArr[],
+		int sizeOfArr, int* minValueIn) {
+	int i = 0, minValue = 0, minIndex = 0, flag = 0;
 	if (NULL == possibleStepsValueArr || sizeOfArr <= 0) {
 		return -1;
 	}
-	minValue = possibleStepsValueArr[0];
 	for (; i < sizeOfArr; ++i) {
-		if (possibleStepsValueArr[i] < minValue) {
-			minValue = possibleStepsValueArr[i];
-			minIndex = i;
+		if (possibleStepsArr[i] == 1) {
+			if (flag == 0) {
+				minValue = possibleStepsValueArr[i];
+				minIndex = i;
+				flag = 1;
+				continue;
+			} else {
+				if (possibleStepsValueArr[i] < minValue) {
+					minValue = possibleStepsValueArr[i];
+					minIndex = i;
+				}
+			}
 		}
 	}
 	*minValueIn = minValue;
 	return minIndex;
 }
 
-int findMaxIndexAndValue(int possibleStepsValueArr[], int sizeOfArr,
-		int* maxValueIn) {
-	int i = 1, maxValue = 0, maxIndex = 0;
+int findMaxIndexAndValue(int possibleStepsValueArr[], int possibleStepsArr[],
+		int sizeOfArr, int* maxValueIn) {
+	int i = 0, maxValue = 0, maxIndex = 0, flag = 0;
 	if (NULL == possibleStepsValueArr || sizeOfArr <= 0) {
 		return -1;
 	}
-	maxValue = possibleStepsValueArr[0];
 	for (; i < sizeOfArr; ++i) {
-		if (possibleStepsValueArr[i] > maxValue) {
-			maxValue = possibleStepsValueArr[i];
-			maxIndex = i;
+		if (possibleStepsArr[i] == 1) {
+			if (flag == 0) {
+				maxValue = possibleStepsValueArr[i];
+				maxIndex = i;
+				flag = 1;
+				continue;
+			} else {
+				if (possibleStepsValueArr[i] > maxValue) {
+					maxValue = possibleStepsValueArr[i];
+					maxIndex = i;
+				}
+			}
 		}
 	}
 	*maxValueIn = maxValue;
@@ -58,8 +77,9 @@ int findMaxIndexAndValue(int possibleStepsValueArr[], int sizeOfArr,
 // Runs the recursion inside to free the need to maintain the index of the col
 int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 	int possibleSteps = 0, i = 0, j = 0, value = 0;
+	char currentPlayer = currentGame->currentPlayer;
 	int possbileStepsArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
-	int possbileStepsValueArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
+	int possbileStepsValueArr[SP_FIAR_GAME_N_COLUMNS] = { 0 }; // Change first value and use possibleStepsArr
 	if (NULL == currentGame) {
 		return -1;
 	}
@@ -76,10 +96,12 @@ int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 		if (possbileStepsArr[i] == 1) {
 			rootChildren[j] = spFiarGameCopy(currentGame);
 			if (spFiarGameSetMove(rootChildren[j], i) != SP_FIAR_GAME_SUCCESS) {
-				return -1;
+				exit(1);
 				// find a better return
 			}
-			possbileStepsValueArr[i] = spMiniMaxHelper(rootChildren[j], --depth,
+//			printf("Calling helper!");
+			possbileStepsValueArr[i] = spMiniMaxHelper(rootChildren[j], depth,
+					currentPlayer,
 					true);
 			spFiarGameDestroy(rootChildren[j]);
 			j++;
@@ -91,21 +113,25 @@ int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 		rootChildren = NULL;
 	}
 	// Find index to the collumn to play
-	return findMaxIndexAndValue(possbileStepsValueArr, SP_FIAR_GAME_N_COLUMNS,
-			&value);
+	return findMaxIndexAndValue(possbileStepsValueArr, possbileStepsArr,
+	SP_FIAR_GAME_N_COLUMNS, &value);
 
 }
 
 // think of better return numbers
 // minOrMax - if min- true else- false
-int spMiniMaxHelper(SPFiarGame* src, int depth, bool minOrMax) {
-	int possibleSteps = 0, i = 0, j = 0, value = 0, newDepth = 0;
-	newDepth = depth--;
+int spMiniMaxHelper(SPFiarGame* src, int depth, char currentPlayer,
+		bool minOrMax) {
+	cout_num_of_rec++;
+	int possibleSteps = 0, i = 0, j = 0, value = 0, newDepth = 0, gameScore = 0;
+	newDepth = depth - 1;
 	int possbileStepsArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
 	int possbileStepsValueArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
 	possibleSteps = possibleMoves(src, possbileStepsArr);
-	if (depth == 0 || possibleSteps == 0) {
-		return gameScoringFunc(src);
+	gameScore = gameScoringFunc(src, currentPlayer);
+	if (newDepth
+			== 0|| possibleSteps == 0 || gameScore == INT_MAX || gameScore == INT_MIN) {
+		return gameScore;
 	}
 	SPFiarGame** children = (SPFiarGame**) malloc(
 			possibleSteps * sizeof(SPFiarGame*));
@@ -116,11 +142,11 @@ int spMiniMaxHelper(SPFiarGame* src, int depth, bool minOrMax) {
 		if (possbileStepsArr[i] == 1) {
 			children[j] = spFiarGameCopy(src);
 			if (spFiarGameSetMove(children[j], i) != SP_FIAR_GAME_SUCCESS) {
-				return -1;
+				exit(1);
 				// find a better return
 			}
 			possbileStepsValueArr[i] = spMiniMaxHelper(children[j], newDepth,
-					!minOrMax);
+					currentPlayer, !minOrMax);
 			spFiarGameDestroy(children[j]);
 			j++;
 		}
@@ -130,9 +156,11 @@ int spMiniMaxHelper(SPFiarGame* src, int depth, bool minOrMax) {
 		children = NULL;
 	}
 	if (minOrMax == true) {
-		findMinIndexAndValue(possbileStepsValueArr, possibleSteps, &value);
+		findMinIndexAndValue(possbileStepsValueArr, possbileStepsArr,
+		SP_FIAR_GAME_N_COLUMNS, &value);
 	} else {
-		findMaxIndexAndValue(possbileStepsValueArr, possibleSteps, &value);
+		findMaxIndexAndValue(possbileStepsValueArr, possbileStepsArr,
+		SP_FIAR_GAME_N_COLUMNS, &value);
 	}
 	return value;
 }
