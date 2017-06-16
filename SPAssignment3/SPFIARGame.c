@@ -147,6 +147,7 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoWithMove(SPFiarGame* src, int* collNum) {
 	return rc;
 }
 
+
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
 	if (NULL == src) {

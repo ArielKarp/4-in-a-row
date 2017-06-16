@@ -133,6 +133,8 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col);
  */
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src);
 
+SP_FIAR_GAME_MESSAGE spFiarGameUndoWithMove(SPFiarGame* src, int* collNum);
+
 /**
  * On success, the function prints the board game. If an error occurs, then the
  * function does nothing. The characters 'X' and 'O' are used to represent
