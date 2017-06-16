@@ -32,16 +32,29 @@ SPArrayList* spArrayListCopy(SPArrayList* src) {
 		return NULL;
 	}
 	returnList->actualSize = src->actualSize;
-	coptyIntArray(src->elements, returnList->elements, src->maxSize);
+	copyIntArray(src->elements, returnList->elements, src->maxSize);
 	return returnList;
 }
 
-void coptyIntArray(int* src, int* dst, int size) {
+void copyIntArray(int* src, int* dst, int size) {
 	int index = 0;
 	for (; index < size; index++) {
 		dst[index] = src[index];
 	}
 	return;
+}
+
+bool copyIntArrayFromArrayList(SPArrayList* src, SPArrayList* dst) {
+	int index = 0;
+	bool rc = true;
+	if (NULL == src || NULL == dst || src->maxSize != dst->maxSize) {
+		rc = false;
+		return rc;
+	}
+	for (; index < src->maxSize; index++) {
+		dst->elements[index] = src->elements[index];
+	}
+	return rc;
 }
 
 void spArrayListDestroy(SPArrayList* src) {

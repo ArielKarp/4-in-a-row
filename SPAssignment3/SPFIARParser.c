@@ -40,6 +40,11 @@ SPCommand spParserPraseLine(const char* str) {
 	cmdStr = strtok(copyStr, delim);
 	//printf("%s\n",cmdStr);
 	if (NULL == cmdStr || strcmp(cmdStr,"\0") == 0) {
+		if (NULL != copyStr)
+		{
+			free(copyStr);
+			copyStr = NULL;
+		}
 		return returnCmd;
 	}
 
@@ -55,14 +60,17 @@ SPCommand spParserPraseLine(const char* str) {
 
 		char* numStr = strtok(NULL, delim);
 		if (NULL == numStr) {
+			if (NULL != copyStr)
+			{
+				free(copyStr);
+				copyStr = NULL;
+			}
 			return returnCmd;
 		}
 		returnCmd.arg = atoi(numStr);
 		returnCmd.cmd = SP_ADD_DISC;
-		//printf("%d\n", 	returnCmd.arg);
 		if (spParserIsInt(numStr) == true) {
 			returnCmd.validArg = true;
-			//printf("%d\n", 	returnCmd.arg);
 		}
 	}
 
@@ -73,6 +81,10 @@ SPCommand spParserPraseLine(const char* str) {
 	else if (strcmp(cmdStr,"restart_game") == 0) {
 		returnCmd.cmd = SP_RESTART;
 	}
-
+	if (NULL != copyStr)
+	{
+		free(copyStr);
+		copyStr = NULL;
+	}
 	return returnCmd;
 }

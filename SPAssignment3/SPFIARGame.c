@@ -49,7 +49,10 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 		return NULL;
 	}
 	returnGame->currentPlayer = src->currentPlayer;
-	returnGame->historyMoves = spArrayListCopy(src->historyMoves);
+//	copyIntArray(src->historyMoves, returnGame->historyMoves, src->historySize);
+	if (copyIntArrayFromArrayList(src->historyMoves, returnGame->historyMoves) != true) {
+		return NULL;
+	}
 	if (NULL == returnGame->historyMoves) {
 		return NULL;
 	}

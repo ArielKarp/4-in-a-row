@@ -74,7 +74,9 @@ SPArrayList* spArrayListCreate(int maxSize);
  */
 SPArrayList* spArrayListCopy(SPArrayList* src);
 
-void coptyIntArray(int* src, int* dst, int size);
+void copyIntArray(int* src, int* dst, int size);
+
+bool copyIntArrayFromArrayList(SPArrayList* src, SPArrayList* dst);
 /**
  * Frees all memory resources associated with the source array list. If the
  * source array is NULL, then the function does nothing.
