@@ -90,8 +90,12 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
 		src->actualSize++;
 		return rc;
 	}
-	memmove((src->elements + index + 1), (src->elements + index),
-			(src->actualSize - index) * sizeof(int));
+//	memmove((src->elements + index + 1), (src->elements + index),
+//			(src->actualSize - index) * sizeof(int));
+	int i = src->actualSize;
+	for(; i > index; i--){
+		src->elements[i] = src->elements[i-1];
+	}
 	src->elements[index] = elem;
 	src->actualSize++;
 	return rc;
@@ -124,8 +128,13 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 		src->actualSize--;
 		return rc;
 	}
-	memmove((src->elements + index), (src->elements + index + 1),
-			(src->actualSize - index) * sizeof(int));
+//	memmove((src->elements + index), (src->elements + index + 1),
+//			(src->actualSize - index) * sizeof(int));
+	int i = index;
+	for (; i < (src->actualSize - 1); i++) {
+		src->elements[i] = src->elements[i+1];
+	}
+	src->elements[src->actualSize - 1] = 0;
 	src->actualSize--;
 	return rc;
 }

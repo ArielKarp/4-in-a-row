@@ -2,7 +2,6 @@
 #define SPMINIMAXNODE_H_
 #include "SPFIARGame.h"
 
-extern int cout_num_of_rec;
 //Put all decleartions and constants here
 
 int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth);
