@@ -128,6 +128,25 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 	return true;
 }
 
+SP_FIAR_GAME_MESSAGE spFiarGameUndoWithMove(SPFiarGame* src, int* collNum) {
+	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
+	if (NULL == src) {
+		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
+		return rc;
+	}
+	if (spArrayListIsEmpty(src->historyMoves) == true) {
+		rc = SP_FIAR_GAME_NO_HISTORY;
+		return rc;
+	}
+	*collNum = spArrayListGetLast(src->historyMoves);
+	if (*collNum == -1) {
+		printf("DEBUG: ERROR in getting last in array list of historyMoves\n");
+		return rc;
+	}
+	rc = spFiarGameUndoPrevMove(src);
+	return rc;
+}
+
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 	SP_FIAR_GAME_MESSAGE rc = SP_FIAR_GAME_SUCCESS;
 	if (NULL == src) {
