@@ -232,9 +232,6 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 		if ((candidate != src->gameBoard[r][c]) && (src->gameBoard[r][c] != SP_FIAR_GAME_EMPTY_ENTRY))  {
 			opponentNumCnt++;
 		}
-		//printf("%d %d %c %d %d\n", c + 1, r + 1, src->gameBoard[r][c], span,
-		//	spanCnt);
-
 		if (vector == 1) {
 			c++;
 		}
@@ -252,7 +249,6 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 	}
 
 	if (playerNumCnt == SP_FIAR_GAME_SPAN || opponentNumCnt == SP_FIAR_GAME_SPAN) {
-		//printf("candidate is: %c\n", candidate);
 		return true;
 	} else if ((candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL)
 			|| (candidate == SP_FIAR_GAME_PLAYER_2_SYMBOL)) {
@@ -279,7 +275,6 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 	return false;
 }
 
-// TODO- bug in winner!!
 int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 
 	bool winner = false;
@@ -289,6 +284,7 @@ int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 	for (; vector < 5; vector++) {
 		for (i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 			for (j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
+				// TODO- Make function to check validation in vector (1..4) of [i,j] + SPAN <= limit of matrix
 				winner = checkSpanVector(src, i, j, vector, sumSpanVec, currentPlayer);
 				if (winner == true) {
 					if (src->gameBoard[i][j] != currentPlayer) {
@@ -325,9 +321,7 @@ int gameScoringFuncWinner(SPFiarGame* currentGame) {
 	}
 	result = 0;
 	for (int i = 0; i < sizeOfSpanVec; i++) {
-		//printf("sum of %d is %d\n", i, sumSpanVec[i]);
 		result += ((scoreVector[i]) * (sumSpanVec[i]));
-		//printf("result is %d\n" ,result);
 
 	}
 	return result;
@@ -348,9 +342,7 @@ int gameScoringFunc(SPFiarGame* currentGame, char currentPlayer) {
 	}
 	result = 0;
 	for (int i = 0; i < sizeOfSpanVec; i++) {
-		//printf("sum of %d is %d\n", i, sumSpanVec[i]);
 		result += ((scoreVector[i]) * (sumSpanVec[i]));
-		//printf("result is %d\n" ,result);
 
 	}
 	return result;

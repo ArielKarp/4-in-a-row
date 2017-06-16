@@ -6,8 +6,6 @@
 
 #include "SPMiniMaxNode.h"
 
-int cout_num_of_rec = 0;
-
 int possibleMoves(SPFiarGame* currentGame, int possbileStepsArr[]) {
 	int i = 0, possibleMoves = 0;
 	if (NULL == currentGame) {
@@ -122,7 +120,6 @@ int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 // minOrMax - if min- true else- false
 int spMiniMaxHelper(SPFiarGame* src, int depth, char currentPlayer,
 		bool minOrMax) {
-	cout_num_of_rec++;
 	int possibleSteps = 0, i = 0, j = 0, value = 0, newDepth = 0, gameScore = 0;
 	newDepth = depth - 1;
 	int possbileStepsArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
