@@ -14,36 +14,56 @@
 int main() {
 
 	SPCommand command;
-	SPFiarGame* game = NULL;
+	SPFiarGame* game = spFiarGameCreate(HISTORY_SIZE);
+	char str[BUFFERSIZE] = "0";
+	char winner = '\0';
+	int difficulty = 0;
 
-	gameProgress(game);
+	difficulty = difficultyLevel();
+	winner = gameProgress(game, difficulty);
 
-	if (command.cmd == SP_QUIT) {
-		printf("Exiting…\n");
+	if (winner == 'r'){
 		spFiarGameDestroy(game);
-		exit(EXIT_SUCCESS);
+		game = spFiarGameCreate(HISTORY_SIZE);
+		difficulty = difficultyLevel();
+		winner = gameProgress(game, difficulty);
 	}
-	if (command.cmd == SP_RESTART) {
-		printf("Game restarted!\n");
-		gameProgress(game);
-	}
-	if (command.cmd == SP_SUGGEST_MOVE) {
-		printf("Error: the game is over\n");
-	}
-	if (command.cmd == SP_UNDO_MOVE) {
-		if (game->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
-			undoMove(game);
-		} else {
+
+	while (true) {
+		fgets(str, BUFFERSIZE, stdin);
+		command = spParserPraseLine(str);
+
+		if (command.cmd == SP_QUIT) {
+			printf("Exiting...\n");
+			spFiarGameDestroy(game);
+			exit(EXIT_SUCCESS);
+		}
+		if (command.cmd == SP_RESTART) {
+			printf("Game restarted!\n");
+			spFiarGameDestroy(game);
+			game = spFiarGameCreate(HISTORY_SIZE);
+			difficulty = difficultyLevel();
+			winner = gameProgress(game, difficulty);
+			continue;
+		}
+		if (command.cmd == SP_SUGGEST_MOVE) {
+			printf("Error: the game is over\n");
+			continue;
+		}
+		if (command.cmd == SP_UNDO_MOVE) {
+			if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
+				undoMove(game);
+				winner = gameProgress(game, difficulty);
+			} else {
+				printf("Error: the game is over\n");
+			}
+		}
+		if (command.cmd == SP_ADD_DISC) {
 			printf("Error: the game is over\n");
 		}
+		if (command.cmd == SP_INVALID_LINE) {
+			//command.cmd = atoi(strtok(NULL, " "));
+			printf("Error: invalid command\n");
+		}
 	}
-	if (command.cmd == SP_ADD_DISC) {
-		printf("Error: the game is over\n");
-	}
-	if (command.cmd == SP_INVALID_LINE) {
-		//command.cmd = atoi(strtok(NULL, " "));
-		printf("Error: invalid command\n");
-	}
-
-	return 0;
 }
