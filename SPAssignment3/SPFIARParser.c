@@ -8,11 +8,18 @@
 #include "SPFIARParser.h"
 
 bool spParserIsInt(const char* str) {
-	unsigned i = 0;
+	unsigned int i = 0;
 	if (str[0] == 45) {
 		i = 1;
 	}
-	for (; i < strlen(str) - 1; i++) {
+	unsigned int len = 0;
+	if(str[strlen(str)-1] == '\0'){
+		len = strlen(str) - 1;
+	}
+	else {
+		len = strlen(str);
+	}
+	for (; i < len ; i++) {
 		//ASCII value of 0 is 48 ... 9 = 57
 		//if value is outside not x is no 48<x<57 then in returns false otherwise true
 
@@ -26,19 +33,22 @@ bool spParserIsInt(const char* str) {
 
 SPCommand spParserPraseLine(const char* str) {
 
-	char* copyStr = (char*) malloc((strlen(str) + 1) * sizeof(char));
-	strcpy(copyStr, str);
-	const char delim[8] = " \t\r\n";
-	//printf("%s\n", copyStr);
 	SPCommand returnCmd;
 
 	returnCmd.arg = -1;
 	returnCmd.cmd = SP_INVALID_LINE;
 	returnCmd.validArg = false;
 
-	char* cmdStr;
+	char* copyStr = (char*) malloc((strlen(str) + 1) * sizeof(char));
+	if (NULL == copyStr){
+		returnCmd.cmd = SP_EXCEPTION;
+		return returnCmd;
+	}
+	strcpy(copyStr, str);
+	const char delim[8] = " \t\r\n";
+
+	char* cmdStr = NULL;
 	cmdStr = strtok(copyStr, delim);
-	//printf("%s\n",cmdStr);
 	if (NULL == cmdStr || strcmp(cmdStr, "\0") == 0) {
 		if (NULL != copyStr) {
 			free(copyStr);
@@ -64,6 +74,7 @@ SPCommand spParserPraseLine(const char* str) {
 	}
 
 	else if (strcmp(cmdStr, "add_disc") == 0) {
+		returnCmd.cmd = SP_ADD_DISC;
 
 		char* numStr = strtok(NULL, delim);
 		if (NULL == numStr) {
@@ -73,12 +84,9 @@ SPCommand spParserPraseLine(const char* str) {
 			}
 			return returnCmd;
 		}
-		//printf("string %s\n",numStr);
-		//printf("string %s\n",conStr);
 
 		char* conStr = strtok(NULL, delim);
 		if (NULL != conStr) {
-			returnCmd.cmd = SP_ADD_DISC;
 			return returnCmd;
 		}
 
@@ -86,13 +94,11 @@ SPCommand spParserPraseLine(const char* str) {
 			returnCmd.validArg = true;
 			returnCmd.arg = atoi(numStr);
 		}
-		returnCmd.cmd = SP_ADD_DISC;
 
 	}
 
 	else if (strcmp(cmdStr, "quit") == 0) {
 		char* conStr = strtok(NULL, delim);
-		//printf("string %s\n",conStr);
 		if ((NULL == conStr)) {
 			returnCmd.cmd = SP_QUIT;
 		} else {

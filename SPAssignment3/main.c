@@ -12,27 +12,50 @@
 #define BUFFERSIZE 1024
 
 int main() {
-
 	SPCommand command;
 	SPFiarGame* game = spFiarGameCreate(HISTORY_SIZE);
+	if (NULL == game) {
+		exceptionPrintAndExit(-2);
+	}
+
 	char str[BUFFERSIZE] = "0";
 	char winner = '\0';
 	int difficulty = 0;
 
 	difficulty = difficultyLevel();
+	if ((difficulty == -2) || (difficulty == -3)) {
+		spFiarGameDestroy(game);
+		exceptionPrintAndExit(difficulty);
+	}
 	winner = gameProgress(game, difficulty);
-
-	if (winner == 'r'){
+	if (winner == 'e') {
+		spFiarGameDestroy(game);
+		exceptionPrintAndExit(-3);
+	}
+	if (winner == 'r') {
 		spFiarGameDestroy(game);
 		game = spFiarGameCreate(HISTORY_SIZE);
+		if (NULL == game) {
+			exceptionPrintAndExit(-2);
+		}
 		difficulty = difficultyLevel();
+		if ((difficulty == -2) || (difficulty == -3)) {
+			spFiarGameDestroy(game);
+			exceptionPrintAndExit(difficulty);
+		}
 		winner = gameProgress(game, difficulty);
+		if (winner == 'e') {
+			spFiarGameDestroy(game);
+			exceptionPrintAndExit(-3);
+		}
 	}
-
 	while (true) {
-		fgets(str, BUFFERSIZE, stdin);
+		char* input = fgets(str, BUFFERSIZE, stdin);
+		if (NULL == input) {
+			spFiarGameDestroy(game);
+			exceptionPrintAndExit(-3);
+		}
 		command = spParserPraseLine(str);
-
 		if (command.cmd == SP_QUIT) {
 			printf("Exiting...\n");
 			spFiarGameDestroy(game);
@@ -42,8 +65,19 @@ int main() {
 			printf("Game restarted!\n");
 			spFiarGameDestroy(game);
 			game = spFiarGameCreate(HISTORY_SIZE);
+			if (NULL == game) {
+				exceptionPrintAndExit(-2);
+			}
 			difficulty = difficultyLevel();
+			if ((difficulty == -2) || (difficulty == -3)) {
+				spFiarGameDestroy(game);
+				exceptionPrintAndExit(difficulty);
+			}
 			winner = gameProgress(game, difficulty);
+			if (winner == 'e') {
+				spFiarGameDestroy(game);
+				exceptionPrintAndExit(-3);
+			}
 			continue;
 		}
 		if (command.cmd == SP_SUGGEST_MOVE) {
@@ -54,6 +88,10 @@ int main() {
 			if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
 				undoMove(game);
 				winner = gameProgress(game, difficulty);
+				if (winner == 'e') {
+					spFiarGameDestroy(game);
+					exceptionPrintAndExit(-3);
+				}
 			} else {
 				printf("Error: the game is over\n");
 			}
@@ -62,7 +100,6 @@ int main() {
 			printf("Error: the game is over\n");
 		}
 		if (command.cmd == SP_INVALID_LINE) {
-			//command.cmd = atoi(strtok(NULL, " "));
 			printf("Error: invalid command\n");
 		}
 	}

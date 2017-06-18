@@ -17,6 +17,7 @@ typedef enum {
 	SP_QUIT,
 	SP_RESTART,
 	SP_INVALID_LINE,
+	SP_EXCEPTION,
 } SP_COMMAND;
 
 //a new type that is used to encapsulate a parsed line

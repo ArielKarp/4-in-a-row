@@ -9,7 +9,7 @@
 #define BUFFERSIZE 1024
 char str[BUFFERSIZE] = "0";
 SPCommand command;
-int strToInt;
+int strToInt = 0;
 
 //check if the input is valid between 1 to 7
 int checkValidInputNum(int num) {
@@ -44,22 +44,23 @@ int difficultyLevel() {
 	do {
 		strToInt = 0;
 		printf("Please enter the difficulty level between [1-7]:\n");
-		fgets(str, BUFFERSIZE, stdin);
-		//printf("str1: %s\n",str);
+		char* input = fgets(str, BUFFERSIZE, stdin);
+		if (NULL == input) {
+			return -3;
+		}
 		command = spParserPraseLine(str);
-		//printf("str2: %s\n",str);
+		if (command.cmd == SP_EXCEPTION) {
+			return -2;
+		}
 		if (command.cmd == SP_QUIT) {
 			printf("Exiting...\n");
 			exit(EXIT_SUCCESS);
 		}
-		//printf("1: %s\n", str);
-		//printf("sss: %d\n", checkValidInputNum(atoi(str)));
 
 		if (spParserIsInt(str)) {
 			strToInt = atoi(str);
 			if (!checkValidInputNum(strToInt)) {
 				printf("Error: invalid level (should be between 1 to 7)\n");
-				//printf("ddd: %d\n",strToInt);
 				strToInt = 0;
 				continue;
 			}
@@ -75,7 +76,6 @@ int difficultyLevel() {
 			continue;
 		}
 
-		//printf("str2: %s\n",str);
 	} while ((command.cmd == SP_QUIT) || (strToInt == 0));
 
 	return strToInt;
@@ -101,7 +101,7 @@ void winnerPrint(char winner) {
 int addDisc(SPFiarGame* game) {
 
 	//command.cmd = atoi(strtok(NULL, " "));
-	if ((!checkValidInputNum(command.arg)) || command.validArg == false) {
+	if ((!(checkValidInputNum(command.arg))) || command.validArg == false) {
 		printf("Error: column number must be in range 1-7\n");
 		return 0;
 	}
@@ -128,11 +128,13 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 			printf("Please make the next move:\n");
 		}
 		valid = 1;
-		fgets(str, BUFFERSIZE, stdin);
+		char* input = fgets(str, BUFFERSIZE, stdin);
+		if (NULL == input){
+			return 'e';
+		}
 		command = spParserPraseLine(str);
 
 		if (command.cmd == SP_INVALID_LINE) {
-			//command.cmd = atoi(strtok(NULL, " "));
 			valid = 0;
 			printf("Error: invalid command\n");
 			continue;
@@ -187,8 +189,26 @@ char gameProgress(SPFiarGame* game, int difficulty) {
 	if (winner == 'r'){
 		return winner;
 	}
+	if (winner == 'e'){
+		return 'e';
+	}
 	winnerPrint(winner);
 
 	return winner;
 }
+
+void exceptionPrintAndExit(int functionType) {
+	char* exceptionName = NULL;
+	if(functionType == -2){
+		exceptionName = "malloc";
+	}
+	else if(functionType == -3){
+		exceptionName = "fgets";
+	}
+	printf("Error: %s has failed", exceptionName);
+	printf("Exiting...\n");
+	exit(EXIT_SUCCESS);
+}
+
+
 

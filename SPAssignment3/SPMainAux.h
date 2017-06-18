@@ -17,6 +17,7 @@ int difficultyLevel();
 void winnerPrint(char winner);
 char gamePlay(SPFiarGame* game, int difficulty);
 char gameProgress(SPFiarGame* game,int difficulty);
+void exceptionPrintAndExit(int functionType);
 
 
 #endif
