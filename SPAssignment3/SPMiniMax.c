@@ -10,6 +10,6 @@ int spMinimaxSuggestMove(SPFiarGame* currentGame, unsigned int maxDepth) {
 	if (NULL == currentGame || maxDepth <= 0) {
 		return -1;
 	}
-	// A cast from uint to int!!!
+	// if MiniMax failed in memory allocation- return -2
 	return spMiniMaxAlgorithm(currentGame, maxDepth);
 }

@@ -16,6 +16,8 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 	}
 	returnGame->historyMoves = spArrayListCreate(historySize);
 	if (NULL == returnGame->historyMoves) {
+		free(returnGame);
+		returnGame = NULL;
 		return NULL;
 	}
 	returnGame->historySize = historySize;
@@ -49,11 +51,9 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 		return NULL;
 	}
 	returnGame->currentPlayer = src->currentPlayer;
-//	copyIntArray(src->historyMoves, returnGame->historyMoves, src->historySize);
 	if (copyIntArrayFromArrayList(src->historyMoves, returnGame->historyMoves) != true) {
-		return NULL;
-	}
-	if (NULL == returnGame->historyMoves) {
+		free(returnGame);
+		returnGame = NULL;
 		return NULL;
 	}
 	copyBoard(returnGame->gameBoard, src->gameBoard);
@@ -105,6 +105,7 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 	if (spArrayListSize(src->historyMoves) == src->historySize) {
 		if (spArrayListRemoveFirst(src->historyMoves)
 				!= SP_ARRAY_LIST_SUCCESS) {
+			// TODO- remove this debug
 			printf("DEBUG: EROOR in list remove last");
 		}
 	}
@@ -142,8 +143,9 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoWithMove(SPFiarGame* src, int* collNum) {
 		return rc;
 	}
 	*collNum = spArrayListGetLast(src->historyMoves);
+	// Catch hazard- trying to pass null to spArrayListGetLast
 	if (*collNum == -1) {
-		printf("DEBUG: ERROR in getting last in array list of historyMoves\n");
+		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
 	rc = spFiarGameUndoPrevMove(src);
@@ -168,8 +170,9 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 	}
 	int lastMove = spArrayListGetLast(src->historyMoves);
+	// Catch hazard- trying to pass null to spArrayListGetLast
 	if (lastMove == -1) {
-		printf("DEBUG: ERROR in getting last in array list of historyMoves\n");
+		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
 	src->gameBoard[src->tops[lastMove] - 1][lastMove] =

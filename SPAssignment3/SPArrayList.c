@@ -18,6 +18,8 @@ SPArrayList* spArrayListCreate(int maxSize) {
 	returnList->actualSize = 0;
 	returnList->elements = (int*) calloc(maxSize, sizeof(int));
 	if (NULL == returnList->elements) {
+		free(returnList);
+		returnList = NULL;
 		return NULL;
 	}
 	return returnList;
@@ -103,8 +105,6 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
 		src->actualSize++;
 		return rc;
 	}
-//	memmove((src->elements + index + 1), (src->elements + index),
-//			(src->actualSize - index) * sizeof(int));
 	int i = src->actualSize;
 	for(; i > index; i--){
 		src->elements[i] = src->elements[i-1];
@@ -141,8 +141,6 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 		src->actualSize--;
 		return rc;
 	}
-//	memmove((src->elements + index), (src->elements + index + 1),
-//			(src->actualSize - index) * sizeof(int));
 	int i = index;
 	for (; i < (src->actualSize - 1); i++) {
 		src->elements[i] = src->elements[i+1];
