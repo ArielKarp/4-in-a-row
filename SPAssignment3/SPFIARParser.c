@@ -14,10 +14,10 @@ bool spParserIsInt(const char* str) {
 	}
 	unsigned int len = 0;
 	if(str[strlen(str)-1] == '\0'){
-		len = strlen(str) - 1;
+		len = strlen(str);
 	}
 	else {
-		len = strlen(str);
+		len = strlen(str) - 1;
 	}
 	for (; i < len ; i++) {
 		//ASCII value of 0 is 48 ... 9 = 57

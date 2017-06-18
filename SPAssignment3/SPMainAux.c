@@ -20,6 +20,7 @@ int checkValidInputNum(int num) {
 	return true;
 }
 
+//execute undo move function
 int undoMove(SPFiarGame* game) {
 	int col1 = 0;
 	int col2 = 0;
@@ -45,10 +46,12 @@ int difficultyLevel() {
 		strToInt = 0;
 		printf("Please enter the difficulty level between [1-7]:\n");
 		char* input = fgets(str, BUFFERSIZE, stdin);
+		//exception catch in fgets
 		if (NULL == input) {
 			return -3;
 		}
 		command = spParserPraseLine(str);
+		//exception catch in malloc
 		if (command.cmd == SP_EXCEPTION) {
 			return -2;
 		}
@@ -61,6 +64,7 @@ int difficultyLevel() {
 			strToInt = atoi(str);
 			if (!checkValidInputNum(strToInt)) {
 				printf("Error: invalid level (should be between 1 to 7)\n");
+
 				strToInt = 0;
 				continue;
 			}
@@ -81,6 +85,7 @@ int difficultyLevel() {
 	return strToInt;
 }
 
+//prints the wineer
 void winnerPrint(char winner) {
 	if (winner == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
 		printf(
@@ -98,6 +103,7 @@ void winnerPrint(char winner) {
 	}
 }
 
+//add disc to game board
 int addDisc(SPFiarGame* game) {
 
 	//command.cmd = atoi(strtok(NULL, " "));
@@ -118,6 +124,7 @@ int addDisc(SPFiarGame* game) {
 	return 1;
 }
 
+//while loop for the user vs computer game
 char gamePlay(SPFiarGame* game, int difficulty) {
 	char winner = '\0';
 	int valid = 1;
@@ -129,7 +136,8 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 		}
 		valid = 1;
 		char* input = fgets(str, BUFFERSIZE, stdin);
-		if (NULL == input){
+		//exception catch in fgets
+		if (NULL == input) {
 			return 'e';
 		}
 		command = spParserPraseLine(str);
@@ -157,6 +165,8 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 			valid = undoMove(game);
 			continue;
 		}
+		//add disc to game board, if it is computer turn it usses suggestMove function to chose where to add disc
+		//continue until there is a winner
 		if (command.cmd == SP_ADD_DISC) {
 			int addAnswer = addDisc(game);
 			if (addAnswer == 0) {
@@ -183,13 +193,14 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 	return winner;
 }
 
+//return winner to main function
 char gameProgress(SPFiarGame* game, int difficulty) {
 	char winner = '\0';
 	winner = gamePlay(game, difficulty);
-	if (winner == 'r'){
+	if (winner == 'r') {
 		return winner;
 	}
-	if (winner == 'e'){
+	if (winner == 'e') {
 		return 'e';
 	}
 	winnerPrint(winner);
@@ -197,18 +208,15 @@ char gameProgress(SPFiarGame* game, int difficulty) {
 	return winner;
 }
 
+//print exception and exit the game
 void exceptionPrintAndExit(int functionType) {
 	char* exceptionName = NULL;
-	if(functionType == -2){
+	if (functionType == -2) {
 		exceptionName = "malloc";
-	}
-	else if(functionType == -3){
+	} else if (functionType == -3) {
 		exceptionName = "fgets";
 	}
 	printf("Error: %s has failed", exceptionName);
 	printf("Exiting...\n");
 	exit(EXIT_SUCCESS);
 }
-
-
-
