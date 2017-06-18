@@ -6,6 +6,8 @@
 #include "SPFIARGame.h"
 #include "SPMiniMax.h"
 
+#define HISTORY_SIZE 20
+
 
 //put auxiliary functions and constants used by the main function here.
 
@@ -14,7 +16,7 @@ int undoMove(SPFiarGame* game);
 int difficultyLevel();
 void winnerPrint(char winner);
 char gamePlay(SPFiarGame* game, int difficulty);
-void gameProgress(SPFiarGame* game);
+char gameProgress(SPFiarGame* game,int difficulty);
 
 
 #endif
