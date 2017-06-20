@@ -35,7 +35,7 @@ int main() {
 	checkIfGameProgressReturnedError(game, winner);
 
 	//restart game
-	if (winner == 'r') {
+	while (winner == 'r') {
 		spFiarGameDestroy(game);
 		game = spFiarGameCreate(HISTORY_SIZE);
 		winner = restartGame(game);
@@ -63,6 +63,7 @@ int main() {
 			printf("Game restarted!\n");
 			spFiarGameDestroy(game);
 			game = spFiarGameCreate(HISTORY_SIZE);
+			printf("here");
 			restartGame(game);
 			continue;
 		}
