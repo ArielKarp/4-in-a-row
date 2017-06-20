@@ -368,7 +368,6 @@ int gameScoringFunc(SPFiarGame* currentGame, char currentPlayer) {
 	// This is {-3, -2, -1, 1, 2, 3}
 	int sumSpanVec[6] = { 0 };
 	int result = 0;
-	// HARDCODED
 	int sizeOfSpanVec = 6;
 	// Get board score
 	result = gameBoardScan(currentGame, sumSpanVec, currentPlayer);
