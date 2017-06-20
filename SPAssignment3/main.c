@@ -63,7 +63,6 @@ int main() {
 			printf("Game restarted!\n");
 			spFiarGameDestroy(game);
 			game = spFiarGameCreate(HISTORY_SIZE);
-			printf("here");
 			restartGame(game);
 			continue;
 		}
