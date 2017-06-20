@@ -128,7 +128,11 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem) {
 
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
-	if (NULL == src || index < 0 || index >= src->actualSize) {
+	if (NULL == src || index < 0 || index > src->actualSize) {
+		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
+		return rc;
+	}
+	if (index == src->actualSize && index != 0) {
 		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
@@ -136,7 +140,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 		rc = SP_ARRAY_LIST_EMPTY;
 		return rc;
 	}
-	if (index == src->actualSize) {
+	if (index == (src->actualSize -1)) {
 		src->elements[index] = 0;
 		src->actualSize--;
 		return rc;
@@ -157,6 +161,10 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveFirst(SPArrayList* src) {
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveLast(SPArrayList* src) {
 	if (NULL == src) {
 		SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
+		return rc;
+	}
+	if (src->actualSize == 0) {
+		SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_EMPTY;
 		return rc;
 	}
 	return spArrayListRemoveAt(src, src->actualSize - 1);

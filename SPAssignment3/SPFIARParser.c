@@ -32,13 +32,10 @@ bool spParserIsInt(const char* str) {
 }
 
 SPCommand spParserPraseLine(const char* str) {
-
 	SPCommand returnCmd;
-
 	returnCmd.arg = -1;
 	returnCmd.cmd = SP_INVALID_LINE;
 	returnCmd.validArg = false;
-
 	char* copyStr = (char*) malloc((strlen(str) + 1) * sizeof(char));
 	if (NULL == copyStr){
 		returnCmd.cmd = SP_EXCEPTION;
@@ -46,57 +43,45 @@ SPCommand spParserPraseLine(const char* str) {
 	}
 	strcpy(copyStr, str);
 	const char delim[8] = " \t\r\n";
-
 	char* cmdStr = NULL;
 	cmdStr = strtok(copyStr, delim);
 	if (NULL == cmdStr || strcmp(cmdStr, "\0") == 0) {
-		if (NULL != copyStr) {
-			free(copyStr);
-			copyStr = NULL;
-		}
+		clearStrInput(copyStr);
 		return returnCmd;
 	}
-
 	if (strcmp(cmdStr, "suggest_move") == 0) {
 		char* conStr = strtok(NULL, delim);
 		if (NULL == conStr) {
 			returnCmd.cmd = SP_SUGGEST_MOVE;
 		}
+		clearStrInput(copyStr);
 		return returnCmd;
 	}
-
 	else if (strcmp(cmdStr, "undo_move") == 0) {
 		char* conStr = strtok(NULL, delim);
 		if (NULL == conStr) {
 			returnCmd.cmd = SP_UNDO_MOVE;
 		}
+		clearStrInput(copyStr);
 		return returnCmd;
 	}
-
 	else if (strcmp(cmdStr, "add_disc") == 0) {
 		returnCmd.cmd = SP_ADD_DISC;
-
 		char* numStr = strtok(NULL, delim);
 		if (NULL == numStr) {
-			if (NULL != copyStr) {
-				free(copyStr);
-				copyStr = NULL;
-			}
+			clearStrInput(copyStr);
 			return returnCmd;
 		}
-
 		char* conStr = strtok(NULL, delim);
 		if (NULL != conStr) {
+			clearStrInput(copyStr);
 			return returnCmd;
 		}
-
 		if ((spParserIsInt(numStr) == true)) {
 			returnCmd.validArg = true;
 			returnCmd.arg = atoi(numStr);
 		}
-
 	}
-
 	else if (strcmp(cmdStr, "quit") == 0) {
 		char* conStr = strtok(NULL, delim);
 		if ((NULL == conStr)) {
@@ -105,19 +90,23 @@ SPCommand spParserPraseLine(const char* str) {
 			returnCmd.cmd = SP_INVALID_LINE;
 		}
 	}
-
 	else if (strcmp(cmdStr, "restart_game") == 0) {
-		if (NULL != copyStr) {
-			free(copyStr);
-			copyStr = NULL;
-		}
 		char* conStr = strtok(NULL, delim);
 		if (NULL == conStr) {
 			returnCmd.cmd = SP_RESTART;
+			clearStrInput(copyStr);
 			return returnCmd;
 		} else {
 			returnCmd.cmd = SP_INVALID_LINE;
 		}
 	}
+	clearStrInput(copyStr);
 	return returnCmd;
+}
+
+void clearStrInput(char* str) {
+	if (NULL != str) {
+		free(str);
+		str = NULL;
+	}
 }

@@ -73,47 +73,52 @@ int main() {
 	RUN_TEST(spArrayListBasicRemoveTest);
 	RUN_TEST(spArrayListBasicGetTest);
 	RUN_TEST(spArrayListBasicCopyTest);
-	//	SPArrayList* list = spArrayListCreate(CAPACITY_SIZE);
-	//	int i = 0;
-	//	for (; i < CAPACITY_SIZE; i++) {
-	//		printf("Num is: %d\t", *(list->elements + i));
-	//	}
-	//	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
-	//	if (rc == SP_ARRAY_LIST_SUCCESS) {
-	//		printf("\npipi\n");
-	//	}
-	//	printf("\n");
-	//	rc = spArrayListAddAt(list, 5, 0);
-	//	for (i = 0; i < CAPACITY_SIZE; i++) {
-	//		printf("%d\t", *(list->elements + i));
-	//	}
-	//	printf("\n");
-	//	rc = spArrayListAddAt(list, 10, 1);
-	//	for (i = 0; i < CAPACITY_SIZE; i++) {
-	//		printf("%d\t", *(list->elements + i));
-	//	}
-	//	printf("\n");
-	//	rc = spArrayListAddAt(list, 99, 0);
-	//	for (i = 0; i < CAPACITY_SIZE; i++) {
-	//		printf("%d\t", *(list->elements + i));
-	//	}
-	//	printf("\n");
-	//	rc = spArrayListAddFirst(list, 4);
-	//	for (i = 0; i < CAPACITY_SIZE; i++) {
-	//		printf("%d\t", *(list->elements + i));
-	//	}
-	//	printf("\n");
-	//	rc = spArrayListAddLast(list, 12);
-	//	for (i = 0; i < CAPACITY_SIZE; i++) {
-	//		printf("%d\t", *(list->elements + i));
-	//	}
-	//	printf("\n");
-	//
-	//	rc = spArrayListRemoveAt(list, 0);
-	//	for (i = 0; i < CAPACITY_SIZE; i++) {
-	//		printf("%d\t", *(list->elements + i));
-	//	}
-	//	printf("\n");
-	//
+	SPArrayList* list = spArrayListCreate(CAPACITY_SIZE);
+	int i = 0;
+	for (; i < CAPACITY_SIZE; i++) {
+		printf("Num is: %d\t", *(list->elements + i));
+	}
+	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
+	if (rc == SP_ARRAY_LIST_SUCCESS) {
+		printf("\npipi\n");
+	}
+	printf("\n");
+	rc = spArrayListAddAt(list, 5, 0);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+	rc = spArrayListAddAt(list, 10, 1);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+	rc = spArrayListAddAt(list, 99, 0);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+	rc = spArrayListAddFirst(list, 4);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+	rc = spArrayListAddLast(list, 12);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+
+	rc = spArrayListRemoveAt(list, 0);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+	rc = spArrayListRemoveAt(list, 3);
+	for (i = 0; i < CAPACITY_SIZE; i++) {
+		printf("%d\t", *(list->elements + i));
+	}
+	printf("\n");
+
 	return 0;
 }

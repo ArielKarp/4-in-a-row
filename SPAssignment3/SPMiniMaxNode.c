@@ -8,10 +8,12 @@
 
 int memAllocFail = 0;
 
+
 int possibleMoves(SPFiarGame* currentGame, int possbileStepsArr[]) {
 	assert(currentGame != NULL);
 	int i = 0, possibleMoves = 0;
 	for (; i < SP_FIAR_GAME_N_COLUMNS; i++) {
+		// If move is possible, set relevant entry in array to 1
 		if (spFiarGameIsValidMove(currentGame, i) == true) {
 			possibleMoves++;
 			possbileStepsArr[i] = 1;
@@ -25,6 +27,7 @@ int findMinIndexAndValue(int possibleStepsValueArr[], int possibleStepsArr[],
 	assert(possibleStepsValueArr != NULL);
 	assert(possibleStepsArr != NULL);
 	int i = 0, minValue = 0, minIndex = 0, flag = 0;
+	// Find index of minimum value, using a single iteration with a flag for first value, depends if it is possible
 	for (; i < sizeOfArr; ++i) {
 		if (possibleStepsArr[i] == 1) {
 			if (flag == 0) {
@@ -40,6 +43,7 @@ int findMinIndexAndValue(int possibleStepsValueArr[], int possibleStepsArr[],
 			}
 		}
 	}
+	// Set minimum value to input pointed parameter
 	*minValueIn = minValue;
 	return minIndex;
 }
@@ -49,6 +53,7 @@ int findMaxIndexAndValue(int possibleStepsValueArr[], int possibleStepsArr[],
 	assert(possibleStepsValueArr != NULL);
 	assert(possibleStepsArr != NULL);
 	int i = 0, maxValue = 0, maxIndex = 0, flag = 0;
+	// Find index of maximum value, using a single iteration with a flag for first value, depends if it is possible
 	for (; i < sizeOfArr; ++i) {
 		if (possibleStepsArr[i] == 1) {
 			if (flag == 0) {
@@ -64,25 +69,30 @@ int findMaxIndexAndValue(int possibleStepsValueArr[], int possibleStepsArr[],
 			}
 		}
 	}
+	// Set maximum value to input pointed parameter
 	*maxValueIn = maxValue;
 	return maxIndex;
 }
 
-// Runs the recursion inside to free the need to maintain the index of the col
 int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 	int possibleSteps = 0, i = 0, j = 0, value = 0;
 	char currentPlayer = currentGame->currentPlayer;
 	int possbileStepsArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
-	int possbileStepsValueArr[SP_FIAR_GAME_N_COLUMNS] = { 0 }; // Change first value and use possibleStepsArr
+	int possbileStepsValueArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
+	// Calculate number of possible steps, and populate with 1's possible steps arrary
 	possibleSteps = possibleMoves(currentGame, possbileStepsArr);
+
+	// Create root's children, as number of possible steps
 	SPFiarGame** rootChildren = (SPFiarGame**) malloc(
 			possibleSteps * sizeof(SPFiarGame*));
 
+	// If failed to allocate, return -2 and return
 	if (NULL == rootChildren) {
 		memAllocFail = -2;
 		return memAllocFail;
 	}
 
+	// for every column and if the play is possible and no allocation has
 	for (; i < SP_FIAR_GAME_N_COLUMNS; i++) {
 		if (possbileStepsArr[i] == 1) {
 			if (memAllocFail == 0) {

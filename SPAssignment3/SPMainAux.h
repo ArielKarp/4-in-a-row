@@ -32,7 +32,7 @@ int undoMove(SPFiarGame* game);
  * @return
  * the difficulty int if succeeded or quit or exception
  */
-int difficultyLevel();
+int difficultyLevel(SPFiarGame* game);
 
 /**
  *prints the winner of the game and his next options
@@ -66,5 +66,12 @@ char gameProgress(SPFiarGame* game,int difficulty);
  */
 void exceptionPrintAndExit(int functionType);
 
+
+int addDisc(SPFiarGame* game, SPCommand command);
+void checkIfGameProgressReturnedError( SPFiarGame* game, char errorCode);
+void checkIfDifficulyLevelFailed(SPFiarGame* game, int errorCode);
+void checkIfFgetsFailed(SPFiarGame* game, char* returnFgets);
+void checkIfGameCrateFailed(SPFiarGame* game);
+char restartGame(SPFiarGame* game);
 
 #endif

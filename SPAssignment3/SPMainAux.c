@@ -1,22 +1,18 @@
 /*
  * SPMainAux.c
  *
- *  Created on: 9 áéåðé 2017
+ *  Created on: 9 ï¿½ï¿½ï¿½ï¿½ï¿½ 2017
  *      Author: Ron
  */
 #include "SPMainAux.h"
 
 #define BUFFERSIZE 1024
-char str[BUFFERSIZE] = "0";
-SPCommand command;
-int strToInt = 0;
 
 //check if the input is valid between 1 to 7
 int checkValidInputNum(int num) {
 	if (num < 1 || num > 7) {
 		return false;
 	}
-
 	return true;
 }
 
@@ -41,7 +37,10 @@ int undoMove(SPFiarGame* game) {
 	return 1;
 }
 
-int difficultyLevel() {
+int difficultyLevel(SPFiarGame* game) {
+	SPCommand command;
+	char str[BUFFERSIZE] = "0";
+	int strToInt = 0;
 	do {
 		strToInt = 0;
 		printf("Please enter the difficulty level between [1-7]:\n");
@@ -57,9 +56,9 @@ int difficultyLevel() {
 		}
 		if (command.cmd == SP_QUIT) {
 			printf("Exiting...\n");
+			spFiarGameDestroy(game);
 			exit(EXIT_SUCCESS);
 		}
-
 		if (spParserIsInt(str)) {
 			strToInt = atoi(str);
 			if (!checkValidInputNum(strToInt)) {
@@ -73,13 +72,11 @@ int difficultyLevel() {
 				break;
 			}
 		}
-
 		else {
 			printf("Error: invalid level (should be between 1 to 7)\n");
 			strToInt = 0;
 			continue;
 		}
-
 	} while ((command.cmd == SP_QUIT) || (strToInt == 0));
 
 	return strToInt;
@@ -91,12 +88,10 @@ void winnerPrint(char winner) {
 		printf(
 				"Game over: you win\nPlease enter 'quit' to exit or 'restart' to start a new game!\n");
 	}
-
 	if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
 		printf(
 				"Game over: computer wins\nPlease enter 'quit' to exit or 'restart' to start a new game!\n");
 	}
-
 	if (winner == SP_FIAR_GAME_TIE_SYMBOL) {
 		printf(
 				"Game over: it's a tie\nPlease enter 'quit' to exit or 'restart' to start a new game!\n");
@@ -104,14 +99,12 @@ void winnerPrint(char winner) {
 }
 
 //add disc to game board
-int addDisc(SPFiarGame* game) {
-
+int addDisc(SPFiarGame* game, SPCommand command) {
 	//command.cmd = atoi(strtok(NULL, " "));
 	if ((!(checkValidInputNum(command.arg))) || command.validArg == false) {
 		printf("Error: column number must be in range 1-7\n");
 		return 0;
 	}
-
 	SP_FIAR_GAME_MESSAGE add = spFiarGameSetMove(game, command.arg - 1);
 	if (add == SP_FIAR_GAME_INVALID_MOVE) {
 		printf("Error: column %d is full\n", command.arg);
@@ -126,10 +119,11 @@ int addDisc(SPFiarGame* game) {
 
 //while loop for the user vs computer game
 char gamePlay(SPFiarGame* game, int difficulty) {
+	SPCommand command;
+	char str[BUFFERSIZE] = "0";
 	char winner = '\0';
 	int valid = 1;
 	while (winner == '\0') {
-
 		if (valid == 1) {
 			spFiarGamePrintBoard(game);
 			printf("Please make the next move:\n");
@@ -141,7 +135,6 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 			return 'e';
 		}
 		command = spParserPraseLine(str);
-
 		if (command.cmd == SP_INVALID_LINE) {
 			valid = 0;
 			printf("Error: invalid command\n");
@@ -149,7 +142,7 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 		}
 		if (command.cmd == SP_QUIT) {
 			printf("Exiting...\n");
-			exit(EXIT_SUCCESS);
+			return 'f';
 		}
 		if (command.cmd == SP_RESTART) {
 			printf("Game restarted!\n");
@@ -165,10 +158,10 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 			valid = undoMove(game);
 			continue;
 		}
-		//add disc to game board, if it is computer turn it usses suggestMove function to chose where to add disc
+		//add disc to game board, if it is computer turn it uses suggestMove function to chose where to add disc
 		//continue until there is a winner
 		if (command.cmd == SP_ADD_DISC) {
-			int addAnswer = addDisc(game);
+			int addAnswer = addDisc(game, command);
 			if (addAnswer == 0) {
 				valid = 0;
 				continue;
@@ -189,7 +182,6 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 
 		}
 	}
-
 	return winner;
 }
 
@@ -202,6 +194,9 @@ char gameProgress(SPFiarGame* game, int difficulty) {
 	}
 	if (winner == 'e') {
 		return 'e';
+	}
+	if (winner == 'f') {
+		return winner;
 	}
 	winnerPrint(winner);
 
@@ -219,4 +214,46 @@ void exceptionPrintAndExit(int functionType) {
 	printf("Error: %s has failed", exceptionName);
 	printf("Exiting...\n");
 	exit(EXIT_SUCCESS);
+}
+
+void checkIfGameProgressReturnedError(SPFiarGame* game, char errorCode) {
+	if (errorCode == 'e') {
+		spFiarGameDestroy(game);
+		exceptionPrintAndExit(-3);
+	}
+}
+
+void checkIfDifficulyLevelFailed(SPFiarGame* game, int errorCode) {
+	if ((errorCode == -2) || (errorCode == -3)) {
+		spFiarGameDestroy(game);
+		exceptionPrintAndExit(errorCode);
+	}
+	return;
+}
+
+
+void checkIfFgetsFailed(SPFiarGame* game, char* returnFgets) {
+	if (NULL == returnFgets) {
+		spFiarGameDestroy(game);
+		exceptionPrintAndExit(-3);
+	}
+	return;
+}
+
+void checkIfGameCrateFailed(SPFiarGame* game) {
+	if (NULL == game) {
+		exceptionPrintAndExit(-2);
+	}
+	return;
+}
+
+char restartGame(SPFiarGame* game) {
+	int difficulty = 0;
+	char winner = '\0';
+	checkIfGameCrateFailed(game);
+	difficulty = difficultyLevel(game);
+	checkIfDifficulyLevelFailed(game, difficulty);
+	winner = gameProgress(game, difficulty);
+	checkIfGameProgressReturnedError(game, winner);
+	return winner;
 }

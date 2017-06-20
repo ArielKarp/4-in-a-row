@@ -16,44 +16,29 @@ int main() {
 	SPCommand command;
 	SPFiarGame* game = spFiarGameCreate(HISTORY_SIZE);
 	//exception catch in fgets
-	if (NULL == game) {
-		exceptionPrintAndExit(-2);
-	}
+	checkIfGameCrateFailed(game);
 	//init variables
 	char str[BUFFERSIZE] = "0";
 	char winner = '\0';
 	int difficulty = 0;
-	difficulty = difficultyLevel();
-	//exception catch in fgets or malloc
-	if ((difficulty == -2) || (difficulty == -3)) {
-		spFiarGameDestroy(game);
-		exceptionPrintAndExit(difficulty);
-	}
+
+	difficulty = difficultyLevel(game);
+	checkIfDifficulyLevelFailed(game, difficulty);
 	winner = gameProgress(game, difficulty);
-	//exception catch in fgets
-	if (winner == 'e') {
+	if (winner == 'f') {
 		spFiarGameDestroy(game);
-		exceptionPrintAndExit(-3);
+		exit(EXIT_SUCCESS);
 	}
+	checkIfGameProgressReturnedError(game, winner);
+
 	//restart game
 	if (winner == 'r') {
 		spFiarGameDestroy(game);
 		game = spFiarGameCreate(HISTORY_SIZE);
-		//exception catch in malloc
-		if (NULL == game) {
-			exceptionPrintAndExit(-2);
-		}
-		difficulty = difficultyLevel();
-		//exception catch in fgets or malloc
-		if ((difficulty == -2) || (difficulty == -3)) {
+		winner = restartGame(game);
+		if (winner == 'f') {
 			spFiarGameDestroy(game);
-			exceptionPrintAndExit(difficulty);
-		}
-		winner = gameProgress(game, difficulty);
-		//exception catch in fgets
-		if (winner == 'e') {
-			spFiarGameDestroy(game);
-			exceptionPrintAndExit(-3);
+			exit(EXIT_SUCCESS);
 		}
 	}
 	//while loop game
@@ -61,10 +46,7 @@ int main() {
 		//get input from the user
 		char* input = fgets(str, BUFFERSIZE, stdin);
 		//exception catch in fgets
-		if (NULL == input) {
-			spFiarGameDestroy(game);
-			exceptionPrintAndExit(-3);
-		}
+		checkIfFgetsFailed(game, input);
 		command = spParserPraseLine(str);
 		//quit the game
 		if (command.cmd == SP_QUIT) {
@@ -77,23 +59,7 @@ int main() {
 			printf("Game restarted!\n");
 			spFiarGameDestroy(game);
 			game = spFiarGameCreate(HISTORY_SIZE);
-			if (NULL == game) {
-				spFiarGameDestroy(game);
-				exceptionPrintAndExit(-2);
-			}
-			difficulty = difficultyLevel();
-			//exception catch in fgets or malloc
-			if ((difficulty == -2) || (difficulty == -3)) {
-				spFiarGameDestroy(game);
-				exceptionPrintAndExit(difficulty);
-			}
-			//game progress user vs computer
-			winner = gameProgress(game, difficulty);
-			//exception catch in malloc
-			if (winner == 'e') {
-				spFiarGameDestroy(game);
-				exceptionPrintAndExit(-3);
-			}
+			restartGame(game);
 			continue;
 		}
 		//user input is suggest move command
@@ -106,11 +72,7 @@ int main() {
 			if (winner == SP_FIAR_GAME_PLAYER_2_SYMBOL) {
 				undoMove(game);
 				winner = gameProgress(game, difficulty);
-				//exception catch in malloc
-				if (winner == 'e') {
-					spFiarGameDestroy(game);
-					exceptionPrintAndExit(-3);
-				}
+				checkIfGameProgressReturnedError(game, winner);
 			} else {
 				printf("Error: the game is over\n");
 			}
