@@ -17,6 +17,7 @@ SPArrayList* spArrayListCreate(int maxSize) {
 	returnList->maxSize = maxSize;
 	returnList->actualSize = 0;
 	returnList->elements = (int*) calloc(maxSize, sizeof(int));
+	// If allocation fails, free memory and return NULL
 	if (NULL == returnList->elements) {
 		free(returnList);
 		returnList = NULL;
@@ -49,6 +50,7 @@ void copyIntArray(int* src, int* dst, int size) {
 bool copyIntArrayFromArrayList(SPArrayList* src, SPArrayList* dst) {
 	int index = 0;
 	bool rc = true;
+	// Check that size if equal
 	if (NULL == src || NULL == dst || src->maxSize != dst->maxSize) {
 		rc = false;
 		return rc;
@@ -92,19 +94,23 @@ void clearIntArr(int* src, int size) {
 
 SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList* src, int elem, int index) {
 	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
+	// Check index is not out of bounds
 	if (NULL == src || index < 0 || index > src->actualSize) {
 		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
 		return rc;
 	}
+	// Check array is not full
 	if (src->actualSize == src->maxSize) {
 		rc = SP_ARRAY_LIST_FULL;
 		return rc;
 	}
+	// Place elem at the end of the array, not shift is required
 	if (index == src->actualSize) {
 		src->elements[index] = elem;
 		src->actualSize++;
 		return rc;
 	}
+	// Shift elements to right
 	int i = src->actualSize;
 	for(; i > index; i--){
 		src->elements[i] = src->elements[i-1];
@@ -127,6 +133,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddLast(SPArrayList* src, int elem) {
 }
 
 SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
+	// Check index is not out of bounds
 	SP_ARRAY_LIST_MESSAGE rc = SP_ARRAY_LIST_SUCCESS;
 	if (NULL == src || index < 0 || index > src->actualSize) {
 		rc = SP_ARRAY_LIST_INVALID_ARGUMENT;
@@ -140,11 +147,13 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList* src, int index) {
 		rc = SP_ARRAY_LIST_EMPTY;
 		return rc;
 	}
+	// If index is at the list
 	if (index == (src->actualSize -1)) {
 		src->elements[index] = 0;
 		src->actualSize--;
 		return rc;
 	}
+	// Shift to left
 	int i = index;
 	for (; i < (src->actualSize - 1); i++) {
 		src->elements[i] = src->elements[i+1];

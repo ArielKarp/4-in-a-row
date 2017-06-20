@@ -66,12 +66,46 @@ char gameProgress(SPFiarGame* game,int difficulty);
  */
 void exceptionPrintAndExit(int functionType);
 
-
+/**
+ * Add disc to game board
+ * @param game
+ * @param command
+ * @return 0 if some error occured, o/w 1.
+ */
 int addDisc(SPFiarGame* game, SPCommand command);
+
+/**
+ * Check if after gameProgress an error occurred, if so then exit gracefully using exceptionPrintAndExit
+ * @param game
+ * @param errorCode
+ */
 void checkIfGameProgressReturnedError( SPFiarGame* game, char errorCode);
+
+/**
+ * Check if difficultyLevel function failed, if so exit gracefully using exceptionPrintAndExit
+ * @param game
+ * @param errorCode
+ */
 void checkIfDifficulyLevelFailed(SPFiarGame* game, int errorCode);
+
+/**
+ * Check if fgets function failed, if so exit gracefully using exceptionPrintAndExit
+ * @param game
+ * @param errorCode
+ */
 void checkIfFgetsFailed(SPFiarGame* game, char* returnFgets);
+
+/**
+ * Check if creation of game returned null, if so exit gracefully using exceptionPrintAndExit
+ * @param game
+ */
 void checkIfGameCrateFailed(SPFiarGame* game);
+
+/**
+ * Reset the game, get difficulty level and commence game progress
+ * @param game
+ * @return
+ */
 char restartGame(SPFiarGame* game);
 
 #endif

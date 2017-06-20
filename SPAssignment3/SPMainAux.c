@@ -100,7 +100,6 @@ void winnerPrint(char winner) {
 
 //add disc to game board
 int addDisc(SPFiarGame* game, SPCommand command) {
-	//command.cmd = atoi(strtok(NULL, " "));
 	if ((!(checkValidInputNum(command.arg))) || command.validArg == false) {
 		printf("Error: column number must be in range 1-7\n");
 		return 0;
@@ -186,6 +185,7 @@ char gamePlay(SPFiarGame* game, int difficulty) {
 }
 
 //return winner to main function
+// r- restart, e- error, f- quit
 char gameProgress(SPFiarGame* game, int difficulty) {
 	char winner = '\0';
 	winner = gamePlay(game, difficulty);
@@ -217,6 +217,7 @@ void exceptionPrintAndExit(int functionType) {
 }
 
 void checkIfGameProgressReturnedError(SPFiarGame* game, char errorCode) {
+	// Check for error code
 	if (errorCode == 'e') {
 		spFiarGameDestroy(game);
 		exceptionPrintAndExit(-3);
@@ -233,6 +234,7 @@ void checkIfDifficulyLevelFailed(SPFiarGame* game, int errorCode) {
 
 
 void checkIfFgetsFailed(SPFiarGame* game, char* returnFgets) {
+	// Check if fgets failed
 	if (NULL == returnFgets) {
 		spFiarGameDestroy(game);
 		exceptionPrintAndExit(-3);
@@ -241,6 +243,7 @@ void checkIfFgetsFailed(SPFiarGame* game, char* returnFgets) {
 }
 
 void checkIfGameCrateFailed(SPFiarGame* game) {
+	// Check if create game failed
 	if (NULL == game) {
 		exceptionPrintAndExit(-2);
 	}

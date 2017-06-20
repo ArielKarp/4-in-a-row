@@ -1,7 +1,8 @@
 /*
- * main.cSP_QUITz
+ * main.c
  *
- *      Author: Ariel
+ *      Author: Ariel Karpilovski 308552454
+ *      		Ron Tabibian 308472596
  */
 #include <stdio.h>
 #include "SPFIARParser.h"
@@ -25,10 +26,12 @@ int main() {
 	difficulty = difficultyLevel(game);
 	checkIfDifficulyLevelFailed(game, difficulty);
 	winner = gameProgress(game, difficulty);
+	// Commence 'Quit' if requested
 	if (winner == 'f') {
 		spFiarGameDestroy(game);
 		exit(EXIT_SUCCESS);
 	}
+	// Check for memory allocation errors
 	checkIfGameProgressReturnedError(game, winner);
 
 	//restart game
@@ -36,6 +39,7 @@ int main() {
 		spFiarGameDestroy(game);
 		game = spFiarGameCreate(HISTORY_SIZE);
 		winner = restartGame(game);
+		// Commence 'Quit' if requested
 		if (winner == 'f') {
 			spFiarGameDestroy(game);
 			exit(EXIT_SUCCESS);

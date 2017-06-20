@@ -52,6 +52,10 @@ bool spParserIsInt(const char* str);
  */
 SPCommand spParserPraseLine(const char* str);
 
+/**
+ * Free str if not NULL
+ * @param str input string
+ */
 void clearStrInput(char* str);
 
 #endif

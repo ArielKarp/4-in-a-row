@@ -15,12 +15,14 @@ SPFiarGame* spFiarGameCreate(int historySize) {
 		return NULL;
 	}
 	returnGame->historyMoves = spArrayListCreate(historySize);
+	// If array list creation fails, free all memory are return NULL
 	if (NULL == returnGame->historyMoves) {
 		free(returnGame);
 		returnGame = NULL;
 		return NULL;
 	}
 	returnGame->historySize = historySize;
+	// Initialize board and tops
 	initGameBoard(returnGame->gameBoard);
 	initTops(returnGame->tops);
 	returnGame->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
@@ -51,11 +53,13 @@ SPFiarGame* spFiarGameCopy(SPFiarGame* src) {
 		return NULL;
 	}
 	returnGame->currentPlayer = src->currentPlayer;
+	// If copy array failed then free all memory and return NULL
 	if (copyIntArrayFromArrayList(src->historyMoves, returnGame->historyMoves) != true) {
 		free(returnGame);
 		returnGame = NULL;
 		return NULL;
 	}
+	// Copy board and tops
 	copyBoard(returnGame->gameBoard, src->gameBoard);
 	copyTops(returnGame->tops, src->tops);
 	return returnGame;
@@ -101,14 +105,11 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 		return rc;
 	}
 	src->gameBoard[src->tops[col]][col] = src->currentPlayer;
-	// History is full- shift to left
+	// History is full- remove last and shift to left
 	if (spArrayListSize(src->historyMoves) == src->historySize) {
-		if (spArrayListRemoveFirst(src->historyMoves)
-				!= SP_ARRAY_LIST_SUCCESS) {
-			// TODO- remove this debug
-			printf("DEBUG: EROOR in list remove last");
-		}
+		spArrayListRemoveFirst(src->historyMoves);
 	}
+	// Add move to the end of the array
 	if (spArrayListAddLast(src->historyMoves, col) != SP_ARRAY_LIST_SUCCESS) {
 		printf("DEBUG: EROOR in list add");
 	}
@@ -118,6 +119,7 @@ SP_FIAR_GAME_MESSAGE spFiarGameSetMove(SPFiarGame* src, int col) {
 	} else {
 		src->currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 	}
+	// Increase tops
 	src->tops[col]++;
 	return rc;
 }
@@ -126,6 +128,7 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col) {
 	if (NULL == src || col >= SP_FIAR_GAME_N_COLUMNS) {
 		return false;
 	}
+	// Check tops is not full
 	if (src->tops[col] == SP_FIAR_GAME_N_ROWS) {
 		return false;
 	}
@@ -138,6 +141,7 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoWithMove(SPFiarGame* src, int* collNum) {
 		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
+	// Check to see if not empty
 	if (spArrayListIsEmpty(src->historyMoves) == true) {
 		rc = SP_FIAR_GAME_NO_HISTORY;
 		return rc;
@@ -175,12 +179,12 @@ SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src) {
 		rc = SP_FIAR_GAME_INVALID_ARGUMENT;
 		return rc;
 	}
+	// Clear relevant entry in the board
 	src->gameBoard[src->tops[lastMove] - 1][lastMove] =
 	SP_FIAR_GAME_EMPTY_ENTRY;
 	src->tops[lastMove]--;
-	if (spArrayListRemoveLast(src->historyMoves) != SP_ARRAY_LIST_SUCCESS) {
-		printf("DEBUG: error in remove list last");
-	}
+	// Remove last move
+	spArrayListRemoveLast(src->historyMoves);
 	return rc;
 }
 
@@ -210,6 +214,7 @@ SP_FIAR_GAME_MESSAGE spFiarGamePrintBoard(SPFiarGame* src) {
 char spFiarCheckWinner(SPFiarGame* src) {
 	int result = 0;
 	result = gameScoringFuncWinner(src);
+	// If a winner is found the return it's symbol
 	if (result == INT_MAX) {
 		if (src->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
 			return SP_FIAR_GAME_PLAYER_2_SYMBOL;
@@ -217,9 +222,9 @@ char spFiarCheckWinner(SPFiarGame* src) {
 			return SP_FIAR_GAME_PLAYER_1_SYMBOL;
 		}
 	}
+	// Check for tie, i.e. game board is full
 	bool checkIfFull = true;
 	int i = 0, j = 0;
-	// TODO- improve complexity
 	for (; i < SP_FIAR_GAME_N_ROWS; i++) {
 		for (j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
 			if (src->gameBoard[i][j] == SP_FIAR_GAME_EMPTY_ENTRY) {
@@ -234,20 +239,23 @@ char spFiarCheckWinner(SPFiarGame* src) {
 }
 
 /* vector types:
- // 1- horizontal
- // 2- vertical
- // 3- diagonal \
-// 4- diagonal / */
+// 1- horizontal
+// 2- vertical
+// 3- diagonal \
+// 4- diagonal /
+ * */
 bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 		int sumSpanVec[], char currentPlayer) {
 	int span = SP_FIAR_GAME_SPAN;
 	char candidate = currentPlayer;
 	int playerNumCnt = 0;
 	int opponentNumCnt = 0;
+	// Validate currentPlayer symbol
 	if ((candidate != SP_FIAR_GAME_PLAYER_1_SYMBOL)
 			&& (candidate != SP_FIAR_GAME_PLAYER_2_SYMBOL)) {
 		return false;
 	}
+	// For span size, sum over player's and oppentnt's discs
 	for (; span > 0; span--) {
 		if (!((r < 6) && (r >= 0) && (c < 7) && (c >= 0))) {
 			return false;
@@ -273,7 +281,7 @@ bool checkSpanVector(SPFiarGame* src, int r, int c, int vector,
 			r++;
 		}
 	}
-
+	// If winner is found, then return with true
 	if (playerNumCnt == SP_FIAR_GAME_SPAN || opponentNumCnt == SP_FIAR_GAME_SPAN) {
 		return true;
 	} else if ((candidate == SP_FIAR_GAME_PLAYER_1_SYMBOL)
@@ -307,10 +315,10 @@ int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 	int vector = 1;
 	int i = 0, j = 0;
 
+	// Scan for every vector direction for every entry of the game board
 	for (; vector < 5; vector++) {
 		for (i = 0; i < SP_FIAR_GAME_N_ROWS; i++) {
 			for (j = 0; j < SP_FIAR_GAME_N_COLUMNS; j++) {
-				// TODO- Make function to check validation in vector (1..4) of [i,j] + SPAN <= limit of matrix
 				winner = checkSpanVector(src, i, j, vector, sumSpanVec, currentPlayer);
 				if (winner == true) {
 					if (src->gameBoard[i][j] != currentPlayer) {
@@ -329,19 +337,20 @@ int gameBoardScan(SPFiarGame* src, int sumSpanVec[], char currentPlayer) {
 
 int gameScoringFuncWinner(SPFiarGame* currentGame) {
 	int scoreVector[] = { -5, -2, -1, 1, 2, 5 };
-	// This is {-3...3}
+	// This is {-3, -2, -1, 1, 2, 3}
 	int sumSpanVec[6] = { 0 };
 	int result = 0;
-	// HARDCODED
 	int sizeOfSpanVec = 6;
 	char currentPlayer;
+	// Change current player (when checking for winner it's the previous player in our implementation)
 	if (currentGame->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL) {
 		currentPlayer =  SP_FIAR_GAME_PLAYER_2_SYMBOL;
 	}else {
 		currentPlayer = SP_FIAR_GAME_PLAYER_1_SYMBOL;
 	}
+	// Get board score
 	result = gameBoardScan(currentGame, sumSpanVec, currentPlayer);
-
+	// Check if there is a winner
 	if (result == INT_MIN || result == INT_MAX) {
 		return result;
 	}
@@ -356,13 +365,14 @@ int gameScoringFuncWinner(SPFiarGame* currentGame) {
 
 int gameScoringFunc(SPFiarGame* currentGame, char currentPlayer) {
 	int scoreVector[] = { -5, -2, -1, 1, 2, 5 };
-	// This is {-3...3}
+	// This is {-3, -2, -1, 1, 2, 3}
 	int sumSpanVec[6] = { 0 };
 	int result = 0;
 	// HARDCODED
 	int sizeOfSpanVec = 6;
+	// Get board score
 	result = gameBoardScan(currentGame, sumSpanVec, currentPlayer);
-
+	// Check if there is a winner
 	if (result == INT_MIN || result == INT_MAX) {
 		return result;
 	}

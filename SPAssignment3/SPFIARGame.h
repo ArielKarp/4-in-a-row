@@ -68,7 +68,16 @@ typedef enum sp_fiar_game_message_t {
  */
 SPFiarGame* spFiarGameCreate(int historySize);
 
+/**
+ * Set SP_FIAR_GAME_EMPTY_ENTRY in every entry of the board
+ * @param board- game board
+ */
 void initGameBoard(char board[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]);
+
+/**
+ * Initialize tops array with '0' in every index
+ * @param tops
+ */
 void initTops(int tops[SP_FIAR_GAME_N_COLUMNS]);
 
 /**
@@ -83,7 +92,18 @@ void initTops(int tops[SP_FIAR_GAME_N_COLUMNS]);
  */
 SPFiarGame* spFiarGameCopy(SPFiarGame* src);
 
+/**
+ * Utility function, copy board from srcBoard to dstBoard, iterate over every entry
+ * @param destBoard
+ * @param srcBoard
+ */
 void copyBoard(char destBoard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS], char srcBoard[SP_FIAR_GAME_N_ROWS][SP_FIAR_GAME_N_COLUMNS]);
+
+/**
+ * Utility function, copy tops array from srcTops to desTops
+ * @param desTops
+ * @param srcTops
+ */
 void copyTops(int desTops[SP_FIAR_GAME_N_COLUMNS], int srcTops[SP_FIAR_GAME_N_COLUMNS]);
 
 /**
@@ -133,6 +153,13 @@ bool spFiarGameIsValidMove(SPFiarGame* src, int col);
  */
 SP_FIAR_GAME_MESSAGE spFiarGameUndoPrevMove(SPFiarGame* src);
 
+/**
+ * Similar to spFiarGameUndoPrevMove function, but places move into collNum
+ *
+ * @param src- src SPFiarGame
+ * @param collNum- pointer to int parameter that indicates column number- 0-based
+ * @return same as spFiarGameUndoPrevMove
+ */
 SP_FIAR_GAME_MESSAGE spFiarGameUndoWithMove(SPFiarGame* src, int* collNum);
 
 /**
@@ -172,8 +199,42 @@ char spFiarGameGetCurrentPlayer(SPFiarGame* src);
 * null character - otherwise
 */
 char spFiarCheckWinner(SPFiarGame* src);
+
+/**
+ * Calculates number of vectors needed for scoring function
+ * Every entry in sumSpanVec is number of vectors with weight of the following: {-3,-2,-1,1,2,3}
+ * @param currentGame- current SPFiarGame
+ * @param sumSpanVec- input array to be filled during the function
+ * @param currentPlayer- current player's symbol
+ * @return if winner is found during board scan- returns INT_MAX or INT_MIN
+ * 			else, return a unique number (not a winner)
+ */
 int gameBoardScan(SPFiarGame* currentGame, int sumSpanVec[], char currentPlayer);
+
+/**
+ * Calculates board's score regarding to relevant player
+ * @param currentGame current game
+ * @return Score of the game as calculated by scoring function
+ */
 int gameScoringFuncWinner(SPFiarGame* currentGame);
+
+/**
+ * Calculates the score function of the current game with regards to current player
+ * @param currentGame - current game
+ * @param currentPlayer- current player's symbol
+ * @return INT_MAX or INT_MIN if a winner found, o/w the score of the board
+ */
 int gameScoringFunc(SPFiarGame* currentGame, char currentPlayer);
+
+/**
+ * Scans the board by a given direction (vector) from (x,y), during the scan updates sumSpanVec[].
+ * @param src - source game
+ * @param x - x index of the board
+ * @param y- y index of the board
+ * @param vector- direction of the scan
+ * @param sumSpanVec- input array to be filled during the function
+ * @param currentPlayer- current player's symbol
+ * @return true iff a winner is found o/w false
+ */
 bool checkSpanVector(SPFiarGame* src, int x, int y, int vector, int sumSpanVec[], char currentPlayer);
 #endif

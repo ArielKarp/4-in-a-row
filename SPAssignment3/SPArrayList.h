@@ -74,8 +74,21 @@ SPArrayList* spArrayListCreate(int maxSize);
  */
 SPArrayList* spArrayListCopy(SPArrayList* src);
 
+/**
+ * Copy size elements from src array to dst array
+ * @param src int array
+ * @param dst int array
+ * @param size of elements to be copied
+ */
 void copyIntArray(int* src, int* dst, int size);
 
+/**
+ * Same as 'copyIntArray' while using SPArrayList as input.
+ * Copy from src to dst
+ * @param src SPArrayList
+ * @param dst SPArraylist
+ * @return
+ */
 bool copyIntArrayFromArrayList(SPArrayList* src, SPArrayList* dst);
 /**
  * Frees all memory resources associated with the source array list. If the
@@ -95,6 +108,12 @@ void spArrayListDestroy(SPArrayList* src);
  */
 SP_ARRAY_LIST_MESSAGE spArrayListClear(SPArrayList* src);
 
+
+/**
+ * Put '0' for every i in [0,size) in src array
+ * @param src array to be cleared
+ * @param size of elements
+ */
 void clearIntArr(int* src, int size);
 
 /**

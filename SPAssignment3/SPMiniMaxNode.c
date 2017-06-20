@@ -79,20 +79,20 @@ int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 	char currentPlayer = currentGame->currentPlayer;
 	int possbileStepsArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
 	int possbileStepsValueArr[SP_FIAR_GAME_N_COLUMNS] = { 0 };
-	// Calculate number of possible steps, and populate with 1's possible steps arrary
+	// Calculate number of possible steps, and populate with 1's possible steps array
 	possibleSteps = possibleMoves(currentGame, possbileStepsArr);
 
 	// Create root's children, as number of possible steps
 	SPFiarGame** rootChildren = (SPFiarGame**) malloc(
 			possibleSteps * sizeof(SPFiarGame*));
 
-	// If failed to allocate, return -2 and return
+	// If failed to allocate, return '-2'
 	if (NULL == rootChildren) {
 		memAllocFail = -2;
 		return memAllocFail;
 	}
 
-	// for every column and if the play is possible and no allocation has
+	// for every column and if the play is possible and no allocation error has occurred
 	for (; i < SP_FIAR_GAME_N_COLUMNS; i++) {
 		if (possbileStepsArr[i] == 1) {
 			if (memAllocFail == 0) {
@@ -105,6 +105,7 @@ int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 					spFiarGameDestroy(rootChildren[j]);
 					j++;
 				} else {
+					// Allocation issue- set flat to '-2'
 					memAllocFail = -2;
 				}
 			}
@@ -125,7 +126,7 @@ int spMiniMaxAlgorithm(SPFiarGame* currentGame, int depth) {
 
 }
 
-// think of better return numbers
+
 // minOrMax - if min- true else- false
 int spMiniMaxHelper(SPFiarGame* src, int depth, char currentPlayer,
 		bool minOrMax) {
@@ -140,6 +141,7 @@ int spMiniMaxHelper(SPFiarGame* src, int depth, char currentPlayer,
 			== 0|| possibleSteps == 0 || gameScore == INT_MAX || gameScore == INT_MIN) {
 		return gameScore;
 	}
+	// Create nodes's children, as number of possible steps
 	SPFiarGame** children = (SPFiarGame**) malloc(
 			possibleSteps * sizeof(SPFiarGame*));
 
@@ -150,6 +152,7 @@ int spMiniMaxHelper(SPFiarGame* src, int depth, char currentPlayer,
 
 	// Move i in child j
 	// Number of children (j's) == Number of possibleSteps
+	// for every column and if the play is possible and no allocation error has occurred
 	for (; i < SP_FIAR_GAME_N_COLUMNS; ++i) {
 		if (possbileStepsArr[i] == 1) {
 			if (memAllocFail == 0) {
@@ -166,13 +169,16 @@ int spMiniMaxHelper(SPFiarGame* src, int depth, char currentPlayer,
 			}
 		}
 	}
+	// Free node's children array
 	if (NULL != children) {
 		free(children);
 		children = NULL;
 	}
+	// If some memory allocation has occurred, return an error code
 	if (memAllocFail != 0) {
 		return memAllocFail;
 	}
+	// If it is a min node then return minimum value, o/w return maximum value
 	if (minOrMax == true) {
 		findMinIndexAndValue(possbileStepsValueArr, possbileStepsArr,
 		SP_FIAR_GAME_N_COLUMNS, &value);

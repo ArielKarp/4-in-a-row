@@ -9,10 +9,12 @@
 
 bool spParserIsInt(const char* str) {
 	unsigned int i = 0;
+	// Check if number in str is negative
 	if (str[0] == 45) {
 		i = 1;
 	}
 	unsigned int len = 0;
+	// Set size of the number (depends if string literal or null terminated)
 	if(str[strlen(str)-1] == '\0'){
 		len = strlen(str);
 	}
@@ -37,14 +39,17 @@ SPCommand spParserPraseLine(const char* str) {
 	returnCmd.cmd = SP_INVALID_LINE;
 	returnCmd.validArg = false;
 	char* copyStr = (char*) malloc((strlen(str) + 1) * sizeof(char));
+	// Catch failure in malloc
 	if (NULL == copyStr){
 		returnCmd.cmd = SP_EXCEPTION;
 		return returnCmd;
 	}
+	// copy str to copyStr
 	strcpy(copyStr, str);
 	const char delim[8] = " \t\r\n";
 	char* cmdStr = NULL;
 	cmdStr = strtok(copyStr, delim);
+	// Check type of command and return with returnCommand
 	if (NULL == cmdStr || strcmp(cmdStr, "\0") == 0) {
 		clearStrInput(copyStr);
 		return returnCmd;
@@ -105,8 +110,10 @@ SPCommand spParserPraseLine(const char* str) {
 }
 
 void clearStrInput(char* str) {
+	// Free str if not null
 	if (NULL != str) {
 		free(str);
 		str = NULL;
 	}
+	return;
 }
